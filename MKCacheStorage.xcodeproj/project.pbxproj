@@ -10,6 +10,11 @@
 		C5E3153D1FFBDDC000C1F88B /* MKCacheStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */; };
 		C5E315421FFBDDC000C1F88B /* MKCacheStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315411FFBDDC000C1F88B /* MKCacheStorageTests.swift */; };
 		C5E315441FFBDDC000C1F88B /* MKCacheStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C5E3154E1FFBDDDF00C1F88B /* MKCacheStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E3154D1FFBDDDF00C1F88B /* MKCacheStorage.swift */; };
+		C5E315501FFBDF3600C1F88B /* MKCacheStorageOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E3154F1FFBDF3600C1F88B /* MKCacheStorageOptions.swift */; };
+		C5E315531FFBE20200C1F88B /* MKCSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315521FFBE20200C1F88B /* MKCSObject.swift */; };
+		C5E315561FFBE3D800C1F88B /* MKCSStorageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315551FFBE3D800C1F88B /* MKCSStorageHandler.swift */; };
+		C5E315581FFBE55200C1F88B /* TestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315571FFBE55200C1F88B /* TestObject.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -29,6 +34,11 @@
 		C5E3153C1FFBDDC000C1F88B /* MKCacheStorageTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MKCacheStorageTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5E315411FFBDDC000C1F88B /* MKCacheStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorageTests.swift; sourceTree = "<group>"; };
 		C5E315431FFBDDC000C1F88B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C5E3154D1FFBDDDF00C1F88B /* MKCacheStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorage.swift; sourceTree = "<group>"; };
+		C5E3154F1FFBDF3600C1F88B /* MKCacheStorageOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorageOptions.swift; sourceTree = "<group>"; };
+		C5E315521FFBE20200C1F88B /* MKCSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSObject.swift; sourceTree = "<group>"; };
+		C5E315551FFBE3D800C1F88B /* MKCSStorageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSStorageHandler.swift; sourceTree = "<group>"; };
+		C5E315571FFBE55200C1F88B /* TestObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,8 +81,12 @@
 		C5E315351FFBDDC000C1F88B /* MKCacheStorage */ = {
 			isa = PBXGroup;
 			children = (
+				C5E315541FFBE3C000C1F88B /* Storage */,
+				C5E315511FFBE1E400C1F88B /* Schema */,
 				C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */,
 				C5E315371FFBDDC000C1F88B /* Info.plist */,
+				C5E3154D1FFBDDDF00C1F88B /* MKCacheStorage.swift */,
+				C5E3154F1FFBDF3600C1F88B /* MKCacheStorageOptions.swift */,
 			);
 			path = MKCacheStorage;
 			sourceTree = "<group>";
@@ -80,10 +94,27 @@
 		C5E315401FFBDDC000C1F88B /* MKCacheStorageTests */ = {
 			isa = PBXGroup;
 			children = (
+				C5E315571FFBE55200C1F88B /* TestObject.swift */,
 				C5E315411FFBDDC000C1F88B /* MKCacheStorageTests.swift */,
 				C5E315431FFBDDC000C1F88B /* Info.plist */,
 			);
 			path = MKCacheStorageTests;
+			sourceTree = "<group>";
+		};
+		C5E315511FFBE1E400C1F88B /* Schema */ = {
+			isa = PBXGroup;
+			children = (
+				C5E315521FFBE20200C1F88B /* MKCSObject.swift */,
+			);
+			path = Schema;
+			sourceTree = "<group>";
+		};
+		C5E315541FFBE3C000C1F88B /* Storage */ = {
+			isa = PBXGroup;
+			children = (
+				C5E315551FFBE3D800C1F88B /* MKCSStorageHandler.swift */,
+			);
+			path = Storage;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -148,6 +179,7 @@
 				TargetAttributes = {
 					C5E315321FFBDDC000C1F88B = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 0920;
 						ProvisioningStyle = Automatic;
 					};
 					C5E3153B1FFBDDC000C1F88B = {
@@ -196,6 +228,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5E315561FFBE3D800C1F88B /* MKCSStorageHandler.swift in Sources */,
+				C5E3154E1FFBDDDF00C1F88B /* MKCacheStorage.swift in Sources */,
+				C5E315501FFBDF3600C1F88B /* MKCacheStorageOptions.swift in Sources */,
+				C5E315531FFBE20200C1F88B /* MKCSObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -203,6 +239,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5E315581FFBE55200C1F88B /* TestObject.swift in Sources */,
 				C5E315421FFBDDC000C1F88B /* MKCacheStorageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -334,6 +371,7 @@
 		C5E315481FFBDDC100C1F88B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -347,6 +385,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = de.moritzkanzler.MKCacheStorage;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -355,6 +394,7 @@
 		C5E315491FFBDDC100C1F88B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -376,6 +416,7 @@
 		C5E3154B1FFBDDC100C1F88B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ELU5666M3R;
 				INFOPLIST_FILE = MKCacheStorageTests/Info.plist;
@@ -390,6 +431,7 @@
 		C5E3154C1FFBDDC100C1F88B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = ELU5666M3R;
 				INFOPLIST_FILE = MKCacheStorageTests/Info.plist;

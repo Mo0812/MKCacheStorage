@@ -11,9 +11,16 @@ import XCTest
 
 class MKCacheStorageTests: XCTestCase {
     
+    var objContainer: [TestObject] = [TestObject]()
+    var storage: MKCacheStorage?
+    
     override func setUp() {
         super.setUp()
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        let testObj = TestObject(name: "Michi Mustermann", age: 32)
+        objContainer.append(testObj)
+        
+        self.storage = MKCacheStorage(debugInfo: false)
     }
     
     override func tearDown() {
@@ -24,6 +31,19 @@ class MKCacheStorageTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let expec = expectation(description: "Object save and retrieve")
+        
+        for obj in self.objContainer {
+            self.storage?.save(object: obj, under: "id1")
+            let storedObj = self.storage?.get(identifier: "id1")
+            if let retrievedObj = storedObj as? TestObject {
+                print(retrievedObj.name)
+                print(retrievedObj.age)
+                XCTAssertTrue(obj.name == retrievedObj.name, "No match")
+                expec.fulfill()
+            }
+        }
+        
     }
     
     func testPerformanceExample() {
