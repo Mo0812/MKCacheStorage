@@ -15,8 +15,16 @@ class TestObject: NSObject, NSCoding {
     }
     
     required convenience init?(coder aDecoder: NSCoder) {
-        guard let name = aDecoder.decodeObject(forKey: "name") as? String, let age = aDecoder.decodeObject(forKey: "age") as? Int else { return nil }
-        self.init(name: name, age: age)
+        var _name = ""
+        var _age = 0
+        
+        if let name = aDecoder.decodeObject(forKey: "name") as? String {
+            _name = name
+        }
+        if let age = aDecoder.decodeObject(forKey: "age") as? Int {
+            _age = age
+        }
+        self.init(name: _name, age: _age)
     }
     
     var name: String

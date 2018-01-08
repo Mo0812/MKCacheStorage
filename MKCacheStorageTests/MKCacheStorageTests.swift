@@ -34,13 +34,26 @@ class MKCacheStorageTests: XCTestCase {
         let expec = expectation(description: "Object save and retrieve")
         
         for obj in self.objContainer {
-            self.storage?.save(object: obj, under: "id1")
-            let storedObj = self.storage?.get(identifier: "id1")
-            if let retrievedObj = storedObj as? TestObject {
-                print(retrievedObj.name)
-                print(retrievedObj.age)
-                XCTAssertTrue(obj.name == retrievedObj.name, "No match")
-                expec.fulfill()
+            do {
+                if try self.storage!.save(object: obj, under: "id1") {
+                    print("Saving successfull")
+                } else {
+                    print("Failure in saving")
+                }
+            } catch {
+                print("Pathmapping wrong")
+            }
+            
+            do {
+                let storedObj = try self.storage!.get(identifier: "id1")
+                if let retrievedObj = storedObj as? TestObject {
+                    print(retrievedObj.name)
+                    print(retrievedObj.age)
+                    XCTAssertTrue(obj.name == retrievedObj.name, "No match")
+                    expec.fulfill()
+                }
+            } catch {
+                print("Pathmapping wrong")
             }
         }
         

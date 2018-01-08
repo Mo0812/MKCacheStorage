@@ -18,12 +18,14 @@ open class MKCacheStorage {
         self.storageHandler = MKCSStorageHandler()
     }
     
-    open func save(object: NSObject, under identifier: String) {
-        self.storageHandler.save(object: object)
+    open func save(object: NSObject, under identifier: String) throws -> Bool {
+        return try self.storageHandler.save(object: object)
     }
     
-    open func get(identifier: String) -> NSObject? {
-        guard let object = self.storageHandler.get(identifier: identifier) as? NSObject else { return nil }
+    open func get(identifier: String) throws -> NSObject? {
+        let savedObject = try self.storageHandler.get(identifier: identifier)
+        
+        guard let object = savedObject as? NSObject else { return nil }
         return object
     }
 }
