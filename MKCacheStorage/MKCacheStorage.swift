@@ -10,22 +10,31 @@ import Foundation
 
 open class MKCacheStorage {
     
+    var storageItems = [String: NSObject]()
+    
     let storageHandler: MKCSStorageHandler
     
-    init(debugInfo: Bool) {
+    init(localPath: String, debugInfo: Bool) {
         MKCacheStorageOptions.debugMode = debugInfo
         
-        self.storageHandler = MKCSStorageHandler()
+        self.storageHandler = MKCSStorageHandler(localPath: localPath)
     }
     
-    open func save(object: NSObject, under identifier: String) throws -> Bool {
-        return try self.storageHandler.save(object: object)
-    }
-    
-    open func get(identifier: String) throws -> NSObject? {
-        let savedObject = try self.storageHandler.get(identifier: identifier)
+    open func save(object: NSObject, under identifier: String) -> Bool {
+        self.storageItems[identifier] = object
         
-        guard let object = savedObject as? NSObject else { return nil }
+        do {
+            return try self.storageHandler.save(storage: self.storageItems)
+        } catch MKCSStorageError.invalidPath {
+            print("Pathmapping wrong")
+        } catch {
+            print(error.localizedDescription)
+        }
+        return false
+    }
+    
+    open func get(identifier: String) -> NSObject? {
+        guard let object = self.storageItems[identifier] else { return nil }
         return object
     }
 }

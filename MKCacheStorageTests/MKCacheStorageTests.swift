@@ -12,7 +12,6 @@ import XCTest
 class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [TestObject] = [TestObject]()
-    var storage: MKCacheStorage?
     
     override func setUp() {
         super.setUp()
@@ -20,7 +19,6 @@ class MKCacheStorageTests: XCTestCase {
         let testObj = TestObject(name: "Michi Mustermann", age: 32)
         objContainer.append(testObj)
         
-        self.storage = MKCacheStorage(debugInfo: false)
     }
     
     override func tearDown() {
@@ -28,35 +26,50 @@ class MKCacheStorageTests: XCTestCase {
         super.tearDown()
     }
     
-    func testExample() {
+    func testSavingObjectOnMemory() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        let expec = expectation(description: "Object save and retrieve")
-        
+        let storage = MKCacheStorage(localPath: "", debugInfo: false)
+
         for obj in self.objContainer {
-            do {
-                if try self.storage!.save(object: obj, under: "id1") {
-                    print("Saving successfull")
-                } else {
-                    print("Failure in saving")
-                }
-            } catch {
-                print("Pathmapping wrong")
+            if storage.save(object: obj, under: "id1") {
+                print("Saving successfull")
+            } else {
+                print("Failure in saving")
             }
             
-            do {
-                let storedObj = try self.storage!.get(identifier: "id1")
-                if let retrievedObj = storedObj as? TestObject {
-                    print(retrievedObj.name)
-                    print(retrievedObj.age)
-                    XCTAssertTrue(obj.name == retrievedObj.name, "No match")
-                    expec.fulfill()
-                }
-            } catch {
-                print("Pathmapping wrong")
+            let storedObj = storage.get(identifier: "id1")
+            if let retrievedObj = storedObj as? TestObject {
+                print(retrievedObj.name)
+                print(retrievedObj.age)
+                XCTAssert(obj.name == retrievedObj.name)
+                XCTAssert(obj.age == retrievedObj.age)
             }
         }
         
+    }
+    
+    func testSavingObjectOnDisk() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        let storage = MKCacheStorage(localPath: "", debugInfo: false)
+        
+        for obj in self.objContainer {
+            let storedObj = storage.get(identifier: "id1")
+            if let retrievedObj = storedObj as? TestObject {
+                print(retrievedObj.name)
+                print(retrievedObj.age)
+                XCTAssert(obj.name == retrievedObj.name)
+                XCTAssert(obj.age == retrievedObj.age)
+            }
+        }
+        
+    }
+    
+    func testWrongPath() {
+        let storageWithWrongPath = MKCacheStorage(localPath: "wrong", debugInfo: false)
+        let wrongObj = storageWithWrongPath.get(identifier: "id2")
+        XCTAssert(wrongObj == nil)
     }
     
     func testPerformanceExample() {

@@ -15,30 +15,31 @@ enum MKCSStorageError: Error {
 }
 
 class MKCSStorageHandler {
-    
+        
+    var localPath = ""
     var path: String? {
         let manager = FileManager.default
         let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first
         
-        return url?.appendingPathComponent("MKCSData").path
+        return url?.appendingPathComponent("MKCSData").appendingPathComponent(self.localPath).path
     }
     
-    init() {
-        
+    init(localPath: String) {
+        self.localPath = localPath
     }
     
-    public func save(object: NSObject) throws -> Bool {
+    public func save(storage: [String: NSObject]) throws -> Bool {
         guard let path = self.path else { throw MKCSStorageError.invalidPath }
-        return NSKeyedArchiver.archiveRootObject(object, toFile: path)
+        return NSKeyedArchiver.archiveRootObject(storage, toFile: path)
     }
     
-    public func get(identifier: String) throws -> NSObject? {
+    public func get() throws -> [String: NSObject]? {
         guard let path = self.path else { throw MKCSStorageError.invalidPath }
         
-        let o = NSKeyedUnarchiver.unarchiveObject(withFile: path)
-        guard let object = o as? NSObject else {
+        let s = NSKeyedUnarchiver.unarchiveObject(withFile: path)
+        guard let storage = s as? [String: NSObject] else {
             return nil
         }
-        return object
+        return storage
     }
 }

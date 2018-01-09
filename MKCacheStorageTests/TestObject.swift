@@ -9,7 +9,9 @@
 import Foundation
 
 class TestObject: NSObject, NSCoding {
+    
     func encode(with aCoder: NSCoder) {
+        
         aCoder.encode(self.name, forKey: "name")
         aCoder.encode(self.age, forKey: "age")
     }
@@ -21,9 +23,8 @@ class TestObject: NSObject, NSCoding {
         if let name = aDecoder.decodeObject(forKey: "name") as? String {
             _name = name
         }
-        if let age = aDecoder.decodeObject(forKey: "age") as? Int {
-            _age = age
-        }
+        _age = aDecoder.decodeInteger(forKey: "age")
+        
         self.init(name: _name, age: _age)
     }
     
