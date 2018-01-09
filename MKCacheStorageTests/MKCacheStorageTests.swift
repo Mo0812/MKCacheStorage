@@ -11,14 +11,27 @@ import XCTest
 
 class MKCacheStorageTests: XCTestCase {
     
-    var objContainer: [TestObject] = [TestObject]()
+    var objContainer: [Int: TestObject] = [Int: TestObject]()
+    var storage: MKCacheStorage?
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-        let testObj = TestObject(name: "Michi Mustermann", age: 32)
-        objContainer.append(testObj)
         
+        self.storage = MKCacheStorage(localPath: "", debugInfo: false)
+        
+        if objContainer.isEmpty {
+            for i in 1...100000 {
+                let testObj = TestObject(name: self.randomString(length: 10), age: Int(arc4random_uniform(100)))
+                self.objContainer[i] = testObj
+                
+                if self.storage!.save(object: testObj, under: "id" + String(i)) {
+                    print("Saving successfull")
+                } else {
+                    print("Failure in saving")
+                }
+            }
+        }
+        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
     override func tearDown() {
@@ -26,19 +39,12 @@ class MKCacheStorageTests: XCTestCase {
         super.tearDown()
     }
     
-    func testSavingObjectOnMemory() {
+    func testGetObjectOnMemory() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        let storage = MKCacheStorage(localPath: "", debugInfo: false)
 
-        for obj in self.objContainer {
-            if storage.save(object: obj, under: "id1") {
-                print("Saving successfull")
-            } else {
-                print("Failure in saving")
-            }
-            
-            let storedObj = storage.get(identifier: "id1")
+        for (id, obj) in self.objContainer {
+            let storedObj = self.storage!.get(identifier: "id" + String(id))
             if let retrievedObj = storedObj as? TestObject {
                 print(retrievedObj.name)
                 print(retrievedObj.age)
@@ -49,13 +55,14 @@ class MKCacheStorageTests: XCTestCase {
         
     }
     
-    func testSavingObjectOnDisk() {
+    func testGetObjectOnDisk() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        self.storage = nil
         let storage = MKCacheStorage(localPath: "", debugInfo: false)
         
-        for obj in self.objContainer {
-            let storedObj = storage.get(identifier: "id1")
+        for (id, obj) in self.objContainer {
+            let storedObj = storage.get(identifier: "id" + String(id))
             if let retrievedObj = storedObj as? TestObject {
                 print(retrievedObj.name)
                 print(retrievedObj.age)
@@ -69,14 +76,38 @@ class MKCacheStorageTests: XCTestCase {
     func testWrongPath() {
         let storageWithWrongPath = MKCacheStorage(localPath: "wrong", debugInfo: false)
         let wrongObj = storageWithWrongPath.get(identifier: "id2")
-        XCTAssert(wrongObj == nil)
+        XCTAssertNil(wrongObj)
     }
     
-    func testPerformanceExample() {
+    func testPerformanceOnMemory() {
         // This is an example of a performance test case.
         self.measure {
             // Put the code you want to measure the time of here.
+            testGetObjectOnMemory()
         }
     }
     
+    func testPerformanceOnDisk() {
+        // This is an example of a performance test case.
+        self.measure {
+            // Put the code you want to measure the time of here.
+            testGetObjectOnDisk()
+        }
+    }
+    
+    func randomString(length: Int) -> String {
+        
+        let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let len = UInt32(letters.length)
+        
+        var randomString = ""
+        
+        for _ in 0 ..< length {
+            let rand = arc4random_uniform(len)
+            var nextChar = letters.character(at: Int(rand))
+            randomString += NSString(characters: &nextChar, length: 1) as String
+        }
+        
+        return randomString
+    }
 }

@@ -18,6 +18,24 @@ open class MKCacheStorage {
         MKCacheStorageOptions.debugMode = debugInfo
         
         self.storageHandler = MKCSStorageHandler(localPath: localPath)
+        
+        do {
+            try self.initStorage()
+        } catch {
+            print(error.localizedDescription)
+        }
+    }
+    
+    private func initStorage() throws {
+        do {
+            if let storageItems = try self.storageHandler.get() {
+                self.storageItems = storageItems
+            } else {
+                throw MKCSStorageError.storageNotFound
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
     }
     
     open func save(object: NSObject, under identifier: String) -> Bool {

@@ -12,7 +12,6 @@
 		C5E315441FFBDDC000C1F88B /* MKCacheStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C5E3154E1FFBDDDF00C1F88B /* MKCacheStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E3154D1FFBDDDF00C1F88B /* MKCacheStorage.swift */; };
 		C5E315501FFBDF3600C1F88B /* MKCacheStorageOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E3154F1FFBDF3600C1F88B /* MKCacheStorageOptions.swift */; };
-		C5E315531FFBE20200C1F88B /* MKCSObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315521FFBE20200C1F88B /* MKCSObject.swift */; };
 		C5E315561FFBE3D800C1F88B /* MKCSStorageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315551FFBE3D800C1F88B /* MKCSStorageHandler.swift */; };
 		C5E315581FFBE55200C1F88B /* TestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315571FFBE55200C1F88B /* TestObject.swift */; };
 /* End PBXBuildFile section */
@@ -36,7 +35,6 @@
 		C5E315431FFBDDC000C1F88B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C5E3154D1FFBDDDF00C1F88B /* MKCacheStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorage.swift; sourceTree = "<group>"; };
 		C5E3154F1FFBDF3600C1F88B /* MKCacheStorageOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorageOptions.swift; sourceTree = "<group>"; };
-		C5E315521FFBE20200C1F88B /* MKCSObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSObject.swift; sourceTree = "<group>"; };
 		C5E315551FFBE3D800C1F88B /* MKCSStorageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSStorageHandler.swift; sourceTree = "<group>"; };
 		C5E315571FFBE55200C1F88B /* TestObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestObject.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,7 +80,6 @@
 			isa = PBXGroup;
 			children = (
 				C5E315541FFBE3C000C1F88B /* Storage */,
-				C5E315511FFBE1E400C1F88B /* Schema */,
 				C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */,
 				C5E315371FFBDDC000C1F88B /* Info.plist */,
 				C5E3154D1FFBDDDF00C1F88B /* MKCacheStorage.swift */,
@@ -99,14 +96,6 @@
 				C5E315431FFBDDC000C1F88B /* Info.plist */,
 			);
 			path = MKCacheStorageTests;
-			sourceTree = "<group>";
-		};
-		C5E315511FFBE1E400C1F88B /* Schema */ = {
-			isa = PBXGroup;
-			children = (
-				C5E315521FFBE20200C1F88B /* MKCSObject.swift */,
-			);
-			path = Schema;
 			sourceTree = "<group>";
 		};
 		C5E315541FFBE3C000C1F88B /* Storage */ = {
@@ -231,7 +220,6 @@
 				C5E315561FFBE3D800C1F88B /* MKCSStorageHandler.swift in Sources */,
 				C5E3154E1FFBDDDF00C1F88B /* MKCacheStorage.swift in Sources */,
 				C5E315501FFBDF3600C1F88B /* MKCacheStorageOptions.swift in Sources */,
-				C5E315531FFBE20200C1F88B /* MKCSObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,8 +10,7 @@ import Foundation
 
 enum MKCSStorageError: Error {
     case invalidPath
-    case saveFailure
-    case fileNotFound
+    case storageNotFound
 }
 
 class MKCSStorageHandler {
