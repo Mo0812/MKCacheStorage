@@ -13,47 +13,59 @@ class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [Int: TestObject] = [Int: TestObject]()
     var storage: MKCacheStorage?
+    var max: Int = 10000
     
     override func setUp() {
         super.setUp()
         
         self.storage = MKCacheStorage(debugInfo: false)
-        
-        /*if objContainer.isEmpty {
-            for i in 1...100 {
-                let testObj = TestObject(name: self.randomString(length: 10), age: Int(arc4random_uniform(100)))
-                self.objContainer[i] = testObj
-                
-                if self.storage!.save(object: testObj, under: "id" + String(i)) {
-                } else {
-                    print("Failure in saving")
-                }
-            }
-        }*/
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        for i in 1...self.max {
+            let testObj = TestObject(name: "name" + String(i), age: i)
+            self.objContainer[i] = testObj
+        }
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        //self.storage?.clearStorage()
         self.storage = nil
         super.tearDown()
+    }
+    
+    func t1estInitStorage() {
+        for i in 1...self.max {
+            let testObj = TestObject(name: "name" + String(i), age: i)
+            
+            if self.storage!.save(object: testObj, under: "id" + String(i)) {
+            } else {
+                print("Failure in saving")
+            }
+        }
     }
     
     func testGetObjectOnMemory() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
 
-        for (id, obj) in self.objContainer {
-            let storedObj = self.storage!.get(identifier: "id" + String(id))
-            if let retrievedObj = storedObj as? TestObject {
-                XCTAssert(obj.name == retrievedObj.name)
-                XCTAssert(obj.age == retrievedObj.age)
-            } else {
-                XCTFail()
-            }
+        walkThroughObjects(storage: self.storage!)
+        
+    }
+    
+    func testGetObjectAsync() {
+        var expecArr = [XCTestExpectation]()
+        
+        for(id, obj) in self.objContainer {
+            let expec = expectation(description: "Async get")
+            expecArr.append(expec)
+            self.storage?.get(identifier: "id" + String(id), result: { object in
+                if let retrievedObj = object as? TestObject {
+                    if obj.name == retrievedObj.name && obj.age == retrievedObj.age {
+                        expec.fulfill()
+                    }
+                }
+            })
         }
         
+        wait(for: expecArr, timeout: 10)
     }
     
     func testGetObjectOnDisk() {
@@ -61,18 +73,7 @@ class MKCacheStorageTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         self.storage = nil
         let storage = MKCacheStorage(debugInfo: false)
-        
-        for (id, obj) in self.objContainer {
-            let storedObj = storage.get(identifier: "id" + String(id))
-            if let retrievedObj = storedObj as? TestObject {
-                XCTAssert(obj.name == retrievedObj.name)
-                XCTAssert(obj.age == retrievedObj.age)
-            }
-            else {
-                XCTFail()
-            }
-        }
-        
+        walkThroughObjects(storage: storage)
     }
     
     func testPerformanceOnMemory() {
@@ -91,19 +92,23 @@ class MKCacheStorageTests: XCTestCase {
         }
     }
     
-    func randomString(length: Int) -> String {
-        
-        let letters : NSString = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-        let len = UInt32(letters.length)
-        
-        var randomString = ""
-        
-        for _ in 0 ..< length {
-            let rand = arc4random_uniform(len)
-            var nextChar = letters.character(at: Int(rand))
-            randomString += NSString(characters: &nextChar, length: 1) as String
+    func testPerformanceOnAsync() {
+        self.measure {
+            testGetObjectAsync()
         }
-        
-        return randomString
     }
+    
+    func walkThroughObjects(storage: MKCacheStorage) {
+        for (id, obj) in self.objContainer {
+            let storedObj = storage.get(identifier: "id" + String(id))
+            if let retrievedObj = storedObj as? TestObject {
+                XCTAssert(obj.name == retrievedObj.name)
+                XCTAssert(obj.age == retrievedObj.age)
+            }
+            else {
+                XCTFail()
+            }
+        }
+    }
+    
 }
