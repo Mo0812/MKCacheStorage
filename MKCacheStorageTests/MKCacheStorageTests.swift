@@ -19,7 +19,7 @@ class MKCacheStorageTests: XCTestCase {
         
         self.storage = MKCacheStorage(debugInfo: false)
         
-        if objContainer.isEmpty {
+        /*if objContainer.isEmpty {
             for i in 1...100 {
                 let testObj = TestObject(name: self.randomString(length: 10), age: Int(arc4random_uniform(100)))
                 self.objContainer[i] = testObj
@@ -29,13 +29,13 @@ class MKCacheStorageTests: XCTestCase {
                     print("Failure in saving")
                 }
             }
-        }
+        }*/
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        self.storage?.clearStorage()
+        //self.storage?.clearStorage()
         self.storage = nil
         super.tearDown()
     }
