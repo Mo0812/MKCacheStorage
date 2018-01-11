@@ -40,19 +40,26 @@ open class MKCacheStorage {
     
     open func save(object: NSObject, under identifier: String) -> Bool {
         self.storageItems[identifier] = object
-        
-        do {
-            return try self.storageHandler.save(storage: self.storageItems)
-        } catch MKCSStorageError.invalidPath {
-            print("Pathmapping wrong")
-        } catch {
-            print(error.localizedDescription)
-        }
-        return false
+        return true
     }
     
     open func get(identifier: String) -> NSObject? {
         guard let object = self.storageItems[identifier] else { return nil }
         return object
+    }
+    
+    deinit {
+        print("deinit")
+        do {
+            if try self.storageHandler.save(storage: self.storageItems) {
+                print("Data saved to disk")
+            } else {
+                print("Data saving incomplete")
+            }
+        } catch MKCSStorageError.invalidPath {
+            print("Pathmapping wrong")
+        } catch {
+            print(error.localizedDescription)
+        }
     }
 }
