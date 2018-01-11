@@ -15,30 +15,62 @@ enum MKCSStorageError: Error {
 
 class MKCSStorageHandler {
         
-    var localPath = ""
-    var path: String? {
+    var path: URL? {
         let manager = FileManager.default
         let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first
         
-        return url?.appendingPathComponent("MKCSData").appendingPathComponent(self.localPath).path
+        return url?.appendingPathComponent("MKCSData", isDirectory: true)
     }
     
-    init(localPath: String) {
-        self.localPath = localPath
+    init() throws {
+        try self.initStorageFolder()
     }
     
-    public func save(storage: [String: NSObject]) throws -> Bool {
-        guard let path = self.path else { throw MKCSStorageError.invalidPath }
-        return NSKeyedArchiver.archiveRootObject(storage, toFile: path)
-    }
-    
-    public func get() throws -> [String: NSObject]? {
+    private func initStorageFolder() throws {
+        let manager = FileManager.default
         guard let path = self.path else { throw MKCSStorageError.invalidPath }
         
-        let s = NSKeyedUnarchiver.unarchiveObject(withFile: path)
-        guard let storage = s as? [String: NSObject] else {
+        if !manager.fileExists(atPath: path.path) {
+            do {
+                try manager.createDirectory(at: path, withIntermediateDirectories: false, attributes: nil)
+            } catch {
+                print(error.localizedDescription)
+                throw MKCSStorageError.storageNotFound
+            }
+        }
+    }
+    
+    public func save(object: NSObject, under identifier: String) throws -> Bool {
+        guard let path = self.path else { throw MKCSStorageError.invalidPath }
+        let objectPath = path.appendingPathComponent(identifier)
+        
+        return NSKeyedArchiver.archiveRootObject(object, toFile: objectPath.path)
+    }
+    
+    public func get(identifier: String) throws -> NSObject? {
+        guard let path = self.path else { throw MKCSStorageError.invalidPath }
+        let objectPath = path.appendingPathComponent(identifier).path
+        
+        let o = NSKeyedUnarchiver.unarchiveObject(withFile: objectPath)
+        guard let object = o as? NSObject else {
             return nil
         }
-        return storage
+        return object
+    }
+    
+    public func clearAll() throws {
+        let manager = FileManager.default
+        guard let path = self.path else { throw MKCSStorageError.invalidPath }
+        
+        if !manager.fileExists(atPath: path.path) {
+            do {
+                let files = try manager.contentsOfDirectory(atPath: path.path)
+                for file in files {
+                    try manager.removeItem(at: path.appendingPathComponent(file))
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
     }
 }

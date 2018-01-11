@@ -11,55 +11,57 @@ import Foundation
 open class MKCacheStorage {
     
     var storageItems = [String: NSObject]()
+    let storageHandler: MKCSStorageHandler?
     
-    let storageHandler: MKCSStorageHandler
-    
-    init(localPath: String, debugInfo: Bool) {
+    init(debugInfo: Bool) {
         MKCacheStorageOptions.debugMode = debugInfo
         
-        self.storageHandler = MKCSStorageHandler(localPath: localPath)
-        
         do {
-            try self.initStorage()
+            self.storageHandler = try MKCSStorageHandler()
         } catch {
-            print(error.localizedDescription)
-        }
-    }
-    
-    private func initStorage() throws {
-        do {
-            if let storageItems = try self.storageHandler.get() {
-                self.storageItems = storageItems
-            } else {
-                throw MKCSStorageError.storageNotFound
-            }
-        } catch {
+            self.storageHandler = nil
             print(error.localizedDescription)
         }
     }
     
     open func save(object: NSObject, under identifier: String) -> Bool {
+        //Saving in dict
         self.storageItems[identifier] = object
-        return true
+        
+        //Saving on disk
+        guard let storageHandler = self.storageHandler else { return false }
+        do {
+            return try storageHandler.save(object: object, under: identifier)
+        } catch {
+            print(error.localizedDescription)
+            return false
+        }
     }
     
     open func get(identifier: String) -> NSObject? {
-        guard let object = self.storageItems[identifier] else { return nil }
-        return object
+        //Get object from memory
+        if let object = self.storageItems[identifier] {
+            return object
+        }
+        
+        //Else get object from disk
+        guard let storageHandler = self.storageHandler else { return nil }
+        do {
+            if let object = try storageHandler.get(identifier: identifier) {
+                return object
+            }
+        } catch {
+            print(error.localizedDescription)
+        }
+        return nil
+    }
+    
+    open func clearStorage() {
+        self.storageItems = [String: NSObject]()
+        try? self.storageHandler?.clearAll()
     }
     
     deinit {
         print("deinit")
-        do {
-            if try self.storageHandler.save(storage: self.storageItems) {
-                print("Data saved to disk")
-            } else {
-                print("Data saving incomplete")
-            }
-        } catch MKCSStorageError.invalidPath {
-            print("Pathmapping wrong")
-        } catch {
-            print(error.localizedDescription)
-        }
     }
 }

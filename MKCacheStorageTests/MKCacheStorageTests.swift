@@ -17,7 +17,7 @@ class MKCacheStorageTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        self.storage = MKCacheStorage(localPath: "", debugInfo: false)
+        self.storage = MKCacheStorage(debugInfo: false)
         
         if objContainer.isEmpty {
             for i in 1...100 {
@@ -36,6 +36,7 @@ class MKCacheStorageTests: XCTestCase {
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
+        self.storage?.clearStorage()
         self.storage = nil
         super.tearDown()
     }
@@ -51,6 +52,8 @@ class MKCacheStorageTests: XCTestCase {
                 print(retrievedObj.age)
                 XCTAssert(obj.name == retrievedObj.name)
                 XCTAssert(obj.age == retrievedObj.age)
+            } else {
+                XCTFail()
             }
         }
         
@@ -60,7 +63,7 @@ class MKCacheStorageTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         self.storage = nil
-        let storage = MKCacheStorage(localPath: "", debugInfo: false)
+        let storage = MKCacheStorage(debugInfo: false)
         
         for (id, obj) in self.objContainer {
             let storedObj = storage.get(identifier: "id" + String(id))
@@ -70,14 +73,11 @@ class MKCacheStorageTests: XCTestCase {
                 XCTAssert(obj.name == retrievedObj.name)
                 XCTAssert(obj.age == retrievedObj.age)
             }
+            else {
+                XCTFail()
+            }
         }
         
-    }
-    
-    func testWrongPath() {
-        let storageWithWrongPath = MKCacheStorage(localPath: "wrong", debugInfo: false)
-        let wrongObj = storageWithWrongPath.get(identifier: "id2")
-        XCTAssertNil(wrongObj)
     }
     
     func testPerformanceOnMemory() {
