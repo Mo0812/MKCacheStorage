@@ -80,10 +80,10 @@
 			isa = PBXGroup;
 			children = (
 				C5E315541FFBE3C000C1F88B /* Storage */,
-				C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */,
-				C5E315371FFBDDC000C1F88B /* Info.plist */,
 				C5E3154D1FFBDDDF00C1F88B /* MKCacheStorage.swift */,
 				C5E3154F1FFBDF3600C1F88B /* MKCacheStorageOptions.swift */,
+				C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */,
+				C5E315371FFBDDC000C1F88B /* Info.plist */,
 			);
 			path = MKCacheStorage;
 			sourceTree = "<group>";
