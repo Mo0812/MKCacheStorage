@@ -48,6 +48,7 @@ open class MKCacheStorage {
         guard let storageHandler = self.storageHandler else { return nil }
         do {
             if let object = try storageHandler.get(identifier: identifier) {
+                self.storageItems[identifier] = object
                 return object
             }
         } catch {

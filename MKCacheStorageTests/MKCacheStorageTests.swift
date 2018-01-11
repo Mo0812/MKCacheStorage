@@ -25,7 +25,6 @@ class MKCacheStorageTests: XCTestCase {
                 self.objContainer[i] = testObj
                 
                 if self.storage!.save(object: testObj, under: "id" + String(i)) {
-                    print("Saving successfull")
                 } else {
                     print("Failure in saving")
                 }
@@ -48,8 +47,6 @@ class MKCacheStorageTests: XCTestCase {
         for (id, obj) in self.objContainer {
             let storedObj = self.storage!.get(identifier: "id" + String(id))
             if let retrievedObj = storedObj as? TestObject {
-                print(retrievedObj.name)
-                print(retrievedObj.age)
                 XCTAssert(obj.name == retrievedObj.name)
                 XCTAssert(obj.age == retrievedObj.age)
             } else {
@@ -68,8 +65,6 @@ class MKCacheStorageTests: XCTestCase {
         for (id, obj) in self.objContainer {
             let storedObj = storage.get(identifier: "id" + String(id))
             if let retrievedObj = storedObj as? TestObject {
-                print(retrievedObj.name)
-                print(retrievedObj.age)
                 XCTAssert(obj.name == retrievedObj.name)
                 XCTAssert(obj.age == retrievedObj.age)
             }
