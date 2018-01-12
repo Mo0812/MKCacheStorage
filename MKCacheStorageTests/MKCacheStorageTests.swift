@@ -13,7 +13,7 @@ class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [Int: TestObject] = [Int: TestObject]()
     var storage: MKCacheStorage?
-    var max: Int = 10000
+    var max: Int = 1000
     
     override func setUp() {
         super.setUp()
@@ -31,14 +31,27 @@ class MKCacheStorageTests: XCTestCase {
         super.tearDown()
     }
     
-    func t1estInitStorage() {
-        for i in 1...self.max {
-            let testObj = TestObject(name: "name" + String(i), age: i)
-            
-            if self.storage!.save(object: testObj, under: "id" + String(i)) {
-            } else {
-                print("Failure in saving")
-            }
+    func testASetObjects() {
+        var expecArr = [XCTestExpectation]()
+        
+        var cnt = 0
+        
+        self.storage?.clearStorage()
+        for (id, object) in self.objContainer {
+            let expec = expectation(description: "Async set")
+            expecArr.append(expec)
+            self.storage?.save(object: object, under: "id" + String(id), result: { success in
+                if !success {
+                    print("Saving failed")
+                } else {
+                    expec.fulfill()
+                    cnt += 1
+                }
+            })
+        }
+        
+        waitForExpectations(timeout: 10) { (error) in
+            print("\(cnt) / \(self.max)")
         }
     }
     
