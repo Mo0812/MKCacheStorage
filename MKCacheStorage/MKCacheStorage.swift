@@ -41,26 +41,27 @@ open class MKCacheStorage {
     }
     
     open func save(object: NSObject, under identifier: String, result:@escaping (Bool) -> ()) {
-        MKCacheStorageOptions.dispatchQueue.async {
+        MKCacheStorageOptions.dispatchQueue.sync {
             //Saving in dict
             self.storageItems[identifier] = object
-            
+        }
+        MKCacheStorageOptions.dispatchQueue.async {
             //Saving on disk
             guard let storageHandler = self.storageHandler else {
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
                     result(false)
                 }
                 return
             }
             do {
                 let saving = try storageHandler.save(object: object, under: identifier)
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
                     result(saving)
                 }
                 return
             } catch {
                 print(error.localizedDescription)
-                DispatchQueue.main.sync {
+                DispatchQueue.main.async {
                     result(false)
                 }
                 return
