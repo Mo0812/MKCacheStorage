@@ -62,7 +62,7 @@ class MKCSStorageHandler {
         let manager = FileManager.default
         guard let path = self.path else { throw MKCSStorageError.invalidPath }
         
-        if !manager.fileExists(atPath: path.path) {
+        if manager.fileExists(atPath: path.path) {
             do {
                 let files = try manager.contentsOfDirectory(atPath: path.path)
                 for file in files {
