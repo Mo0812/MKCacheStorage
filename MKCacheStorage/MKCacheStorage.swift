@@ -38,6 +38,34 @@ open class MKCacheStorage {
         }
     }
     
+    open func save(object: NSObject, under identifier: String, result:@escaping (Bool) -> ()) {
+        MKCacheStorageOptions.dispatchQueue.async {
+            //Saving in dict
+            self.storageItems[identifier] = object
+            
+            //Saving on disk
+            guard let storageHandler = self.storageHandler else {
+                DispatchQueue.main.sync {
+                    result(false)
+                }
+                return
+            }
+            do {
+                let saving = try storageHandler.save(object: object, under: identifier)
+                DispatchQueue.main.sync {
+                    result(saving)
+                }
+                return
+            } catch {
+                print(error.localizedDescription)
+                DispatchQueue.main.sync {
+                    result(false)
+                }
+                return
+            }
+        }
+    }
+    
     open func get(identifier: String) -> NSObject? {
         //Get object from memory
         if let object = self.storageItems[identifier] {
@@ -57,9 +85,45 @@ open class MKCacheStorage {
         return nil
     }
     
+    open func get(identifier: String, result:@escaping (NSObject?) -> ()) {
+        MKCacheStorageOptions.dispatchQueue.async {
+            //Get object from memory
+            if let object = self.storageItems[identifier] {
+                DispatchQueue.main.async {
+                    result(object)
+                }
+                return
+            }
+            
+            //Else get object from disk
+            guard let storageHandler = self.storageHandler else {
+                DispatchQueue.main.async {
+                    result(nil)
+                }
+                return
+            }
+            do {
+                if let object = try storageHandler.get(identifier: identifier) {
+                    self.storageItems[identifier] = object
+                    DispatchQueue.main.async {
+                        result(object)
+                    }
+                    return
+                }
+            } catch {
+                print(error.localizedDescription)
+            }
+            DispatchQueue.main.async {
+                result(nil)
+            }
+        }
+    }
+    
     open func clearStorage() {
-        self.storageItems = [String: NSObject]()
-        try? self.storageHandler?.clearAll()
+        MKCacheStorageOptions.dispatchQueue.sync {
+            self.storageItems = [String: NSObject]()
+            try? self.storageHandler?.clearAll()
+        }
     }
     
     deinit {

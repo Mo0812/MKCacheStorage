@@ -27,6 +27,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		C5001C3B20083A8F002BA52C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MKCacheStorage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKCacheStorage.h; sourceTree = "<group>"; };
 		C5E315371FFBDDC000C1F88B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -61,6 +62,7 @@
 		C5E315291FFBDDC000C1F88B = {
 			isa = PBXGroup;
 			children = (
+				C5001C3B20083A8F002BA52C /* README.md */,
 				C5E315351FFBDDC000C1F88B /* MKCacheStorage */,
 				C5E315401FFBDDC000C1F88B /* MKCacheStorageTests */,
 				C5E315341FFBDDC000C1F88B /* Products */,
