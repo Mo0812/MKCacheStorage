@@ -12,13 +12,12 @@ import XCTest
 class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [Int: TestObject] = [Int: TestObject]()
-    var storage: MKCacheStorage?
+    var storage: MKCacheStorage = MKCacheStorage.sharedInstance
     var max: Int = 1000
     
     override func setUp() {
         super.setUp()
         
-        self.storage = MKCacheStorage(debugInfo: false)
         for i in 1...self.max {
             let testObj = TestObject(name: "name" + String(i), age: i)
             self.objContainer[i] = testObj
@@ -27,7 +26,6 @@ class MKCacheStorageTests: XCTestCase {
     
     override func tearDown() {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
-        self.storage = nil
         super.tearDown()
     }
     
@@ -36,11 +34,11 @@ class MKCacheStorageTests: XCTestCase {
         
         var cnt = 0
         
-        self.storage?.clearStorage()
+        self.storage.clearStorage()
         for (id, object) in self.objContainer {
             let expec = expectation(description: "Async set")
             expecArr.append(expec)
-            self.storage?.save(object: object, under: "id" + String(id), result: { success in
+            self.storage.save(object: object, under: "id" + String(id), result: { success in
                 if !success {
                     print("Saving failed")
                 } else {
@@ -59,7 +57,7 @@ class MKCacheStorageTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
 
-        walkThroughObjects(storage: self.storage!)
+        walkThroughObjects(storage: self.storage)
         
     }
     
@@ -69,7 +67,7 @@ class MKCacheStorageTests: XCTestCase {
         for(id, obj) in self.objContainer {
             let expec = expectation(description: "Async get")
             expecArr.append(expec)
-            self.storage?.get(identifier: "id" + String(id), result: { object in
+            self.storage.get(identifier: "id" + String(id), result: { object in
                 if let retrievedObj = object as? TestObject {
                     if obj.name == retrievedObj.name && obj.age == retrievedObj.age {
                         expec.fulfill()
@@ -84,7 +82,6 @@ class MKCacheStorageTests: XCTestCase {
     func testGetObjectOnDisk() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
-        self.storage = nil
         let storage = MKCacheStorage(debugInfo: false)
         walkThroughObjects(storage: storage)
     }

@@ -10,6 +10,8 @@ import Foundation
 
 open class MKCacheStorage {
     
+    static let sharedInstance = MKCacheStorage(debugInfo: false)
+    
     var storageItems = [String: NSObject]()
     let storageHandler: MKCSStorageHandler?
     
