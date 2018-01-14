@@ -13,7 +13,7 @@ class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [Int: TestObject] = [Int: TestObject]()
     var storage: MKCacheStorage = MKCacheStorage.sharedInstance
-    var max: Int = 1000
+    var max: Int = 100
     
     override func setUp() {
         super.setUp()

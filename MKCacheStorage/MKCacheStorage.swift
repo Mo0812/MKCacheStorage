@@ -14,9 +14,10 @@ open class MKCacheStorage {
     
     var storageItems = [String: NSObject]()
     let storageHandler: MKCSStorageHandler?
+    let indexHandler: MKCSSecondaryIndices?
     
     init(debugInfo: Bool) {
-        MKCacheStorageOptions.debugMode = debugInfo
+        MKCacheStorageGlobals.debugMode = debugInfo
         
         do {
             self.storageHandler = try MKCSStorageHandler()
@@ -24,6 +25,8 @@ open class MKCacheStorage {
             self.storageHandler = nil
             print(error.localizedDescription)
         }
+        
+        self.indexHandler = MKCSSecondaryIndices()
     }
     
     open func save(object: NSObject, under identifier: String) -> Bool {
@@ -41,11 +44,11 @@ open class MKCacheStorage {
     }
     
     open func save(object: NSObject, under identifier: String, result:@escaping (Bool) -> ()) {
-        MKCacheStorageOptions.dispatchQueue.sync {
+        MKCacheStorageGlobals.dispatchQueue.sync {
             //Saving in dict
             self.storageItems[identifier] = object
         }
-        MKCacheStorageOptions.dispatchQueue.async {
+        MKCacheStorageGlobals.dispatchQueue.async {
             //Saving on disk
             guard let storageHandler = self.storageHandler else {
                 DispatchQueue.main.async {
@@ -65,6 +68,32 @@ open class MKCacheStorage {
                     result(false)
                 }
                 return
+            }
+        }
+    }
+    
+    open func save(object:NSObject, under identifier: String, with label: String, result:@escaping (Bool) -> ()) {
+        self.save(object: object, under: identifier) { (success) in
+            MKCacheStorageGlobals.dispatchQueue.async {
+                guard let indexHandler = self.indexHandler else {
+                    DispatchQueue.main.sync {
+                        result(false)
+                    }
+                    return
+                }
+                
+                if success {
+                    indexHandler.add(for: MKCSIndex(label), values: [identifier])
+                    DispatchQueue.main.sync {
+                        result(true)
+                    }
+                    return
+                } else {
+                    DispatchQueue.main.sync {
+                        result(false)
+                    }
+                    return
+                }
             }
         }
     }
@@ -89,7 +118,7 @@ open class MKCacheStorage {
     }
     
     open func get(identifier: String, result:@escaping (NSObject?) -> ()) {
-        MKCacheStorageOptions.dispatchQueue.async {
+        MKCacheStorageGlobals.dispatchQueue.async {
             //Get object from memory
             if let object = self.storageItems[identifier] {
                 DispatchQueue.main.async {
@@ -122,8 +151,12 @@ open class MKCacheStorage {
         }
     }
     
+    open func get(labels: [String], result:@escaping ([NSObject]) -> ()) {
+        
+    }
+    
     open func clearStorage() {
-        MKCacheStorageOptions.dispatchQueue.sync {
+        MKCacheStorageGlobals.dispatchQueue.sync {
             self.storageItems = [String: NSObject]()
             try? self.storageHandler?.clearAll()
         }

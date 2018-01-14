@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct MKCacheStorageOptions {
+struct MKCacheStorageGlobals {
     
     static var debugMode = false
     static let dispatchQueue = DispatchQueue(label: "de.mnoritzkanzler.mkcachestorage", qos: .userInitiated, attributes: .concurrent, autoreleaseFrequency: DispatchQueue.AutoreleaseFrequency.inherit, target: .global()) //DispatchQueue.global(qos: .userInitiated)
