@@ -74,9 +74,9 @@ open class MKCacheStorage {
     
     open func save(object:NSObject, under identifier: String, with label: String, result:@escaping (Bool) -> ()) {
         self.save(object: object, under: identifier) { (success) in
-            MKCacheStorageGlobals.dispatchQueue.async {
+            MKCacheStorageGlobals.dispatchQueue.sync {
                 guard let indexHandler = self.indexHandler else {
-                    DispatchQueue.main.sync {
+                    DispatchQueue.main.async {
                         result(false)
                     }
                     return
@@ -84,12 +84,12 @@ open class MKCacheStorage {
                 
                 if success {
                     indexHandler.add(for: MKCSIndex(label), values: [identifier])
-                    DispatchQueue.main.sync {
+                    DispatchQueue.main.async {
                         result(true)
                     }
                     return
                 } else {
-                    DispatchQueue.main.sync {
+                    DispatchQueue.main.async {
                         result(false)
                     }
                     return

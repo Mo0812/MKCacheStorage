@@ -38,7 +38,13 @@ class MKCacheStorageTests: XCTestCase {
         for (id, object) in self.objContainer {
             let expec = expectation(description: "Async set")
             expecArr.append(expec)
-            self.storage.save(object: object, under: "id" + String(id), result: { success in
+            
+            var label = "odd"
+            if id % 2 == 0 {
+                label = "even"
+            }
+            
+            self.storage.save(object: object, under: "id" + String(id), with: label, result: { success in
                 if !success {
                     print("Saving failed")
                 } else {
@@ -84,6 +90,26 @@ class MKCacheStorageTests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         let storage = MKCacheStorage(debugInfo: false)
         walkThroughObjects(storage: storage)
+    }
+    
+    func testEmptyLabel() {
+        let expec = expectation(description: "Empty label")
+        self.storage.get(label: "empty") { (objects) in
+            XCTAssertTrue(objects.isEmpty)
+            expec.fulfill()
+        }
+        
+        wait(for: [expec], timeout: 10)
+    }
+    
+    func testLabel() {
+        let expec = expectation(description: "Label counting")
+        self.storage.get(label: "odd") { (objects) in
+            XCTAssert(objects.count == (self.objContainer.count / 2))
+            expec.fulfill()
+        }
+    
+        wait(for: [expec], timeout: 10)
     }
     
     func testPerformanceOnMemory() {
