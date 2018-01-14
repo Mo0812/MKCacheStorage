@@ -151,8 +151,28 @@ open class MKCacheStorage {
         }
     }
     
-    open func get(labels: [String], result:@escaping ([NSObject]) -> ()) {
-        
+    open func get(label: String, result:@escaping ([NSObject]) -> ()) {
+        MKCacheStorageGlobals.dispatchQueue.async {
+            var objects = [NSObject]()
+            
+            guard let indexHandler = self.indexHandler else {
+                DispatchQueue.main.async {
+                    result(objects)
+                }
+                return
+            }
+            
+            let indices = indexHandler.get(for: MKCSIndex(label))
+            indices.forEach { (index) in
+                if let val = self.get(identifier: index) {
+                    objects.append(val)
+                }
+            }
+            DispatchQueue.main.async {
+                result(objects)
+            }
+            return
+        }
     }
     
     open func clearStorage() {

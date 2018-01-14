@@ -26,6 +26,14 @@ class MKCSSecondaryIndices {
         }
     }
     
+    func get(for index: MKCSIndex) -> [String] {
+        if let values = self.relations[index] {
+            return Array(values)
+        }
+        
+        return [String]()
+    }
+    
     func have(index: MKCSIndex) -> Bool {
         if self.relations.index(forKey: index) != nil {
             return true
