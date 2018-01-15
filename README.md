@@ -14,6 +14,7 @@ Framework for saving objects persistent on disk. Extended by an dictionary which
 
 | function/objects | 1.000 | 10.000 | 50.000 |
 | ------------------- |:------:|:--------:|--------:|
-| read direct from disk | 0,343 | 3,3 s | 17,5 s |
-| read mixed async | 0,191 s | 1,96 s | 10,5 s |
-| read from memory | 0,00268 s | 0,0303 s | 0,181 s |
+| read direct from disk (*test case*) | 0,343 | 3,3 s | 17,5 s |
+| read from memory (*test case*) | 0,00268 s | 0,0303 s | 0,181 s |
+| read mixed async | 0,19 s | 1,85 s | 8.52 s |
+| read labeld objects (n/2) | 0,15 s |  1,66 s | 8,2 s |
