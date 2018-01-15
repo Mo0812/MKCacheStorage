@@ -8,11 +8,6 @@
 
 import Foundation
 
-enum MKCSStorageError: Error {
-    case invalidPath
-    case storageNotFound
-}
-
 class MKCSStorageHandler {
         
     var path: URL? {
@@ -28,27 +23,27 @@ class MKCSStorageHandler {
     
     private func initStorageFolder() throws {
         let manager = FileManager.default
-        guard let path = self.path else { throw MKCSStorageError.invalidPath }
+        guard let path = self.path else { throw MKCacheStorageError.invalidPath }
         
         if !manager.fileExists(atPath: path.path) {
             do {
                 try manager.createDirectory(at: path, withIntermediateDirectories: false, attributes: nil)
             } catch {
                 print(error.localizedDescription)
-                throw MKCSStorageError.storageNotFound
+                throw MKCacheStorageError.storageNotFound
             }
         }
     }
     
     public func save(object: NSObject, under identifier: String) throws -> Bool {
-        guard let path = self.path else { throw MKCSStorageError.invalidPath }
+        guard let path = self.path else { throw MKCacheStorageError.invalidPath }
         let objectPath = path.appendingPathComponent(identifier)
         
         return NSKeyedArchiver.archiveRootObject(object, toFile: objectPath.path)
     }
     
     public func get(identifier: String) throws -> NSObject? {
-        guard let path = self.path else { throw MKCSStorageError.invalidPath }
+        guard let path = self.path else { throw MKCacheStorageError.invalidPath }
         let objectPath = path.appendingPathComponent(identifier).path
         
         let o = NSKeyedUnarchiver.unarchiveObject(withFile: objectPath)
@@ -60,7 +55,7 @@ class MKCSStorageHandler {
     
     public func clearAll() throws {
         let manager = FileManager.default
-        guard let path = self.path else { throw MKCSStorageError.invalidPath }
+        guard let path = self.path else { throw MKCacheStorageError.invalidPath }
         
         if manager.fileExists(atPath: path.path) {
             do {

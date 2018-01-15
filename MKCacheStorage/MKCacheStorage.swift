@@ -10,23 +10,20 @@ import Foundation
 
 open class MKCacheStorage {
     
-    static let sharedInstance = MKCacheStorage(debugInfo: false)
+    static let shared = MKCacheStorage(debugInfo: false)
     
     var storageItems = [String: NSObject]()
     let storageHandler: MKCSStorageHandler?
+    let indexHandler: MKCSSecondaryIndices?
     
     init(debugInfo: Bool) {
-        MKCacheStorageOptions.debugMode = debugInfo
+        MKCacheStorageGlobals.debugMode = debugInfo
         
-        do {
-            self.storageHandler = try MKCSStorageHandler()
-        } catch {
-            self.storageHandler = nil
-            print(error.localizedDescription)
-        }
+        self.storageHandler = try? MKCSStorageHandler()
+        self.indexHandler = try? MKCSSecondaryIndices()
     }
     
-    open func save(object: NSObject, under identifier: String) -> Bool {
+    private func save(object: NSObject, under identifier: String) -> Bool {
         //Saving in dict
         self.storageItems[identifier] = object
         
@@ -40,45 +37,36 @@ open class MKCacheStorage {
         }
     }
     
-    open func save(object: NSObject, under identifier: String, result:@escaping (Bool) -> ()) {
-        MKCacheStorageOptions.dispatchQueue.sync {
-            //Saving in dict
-            self.storageItems[identifier] = object
+    private func save(object: NSObject, under identifier: String, with labels: [String]) -> Bool {
+        let retVal = self.save(object: object, under: identifier)
+        
+        if let indexHandler = self.indexHandler {
+            labels.forEach({ label in
+                indexHandler.add(for: String(label), values: [identifier])
+            })
         }
-        MKCacheStorageOptions.dispatchQueue.async {
-            //Saving on disk
-            guard let storageHandler = self.storageHandler else {
-                DispatchQueue.main.async {
-                    result(false)
-                }
-                return
-            }
-            do {
-                let saving = try storageHandler.save(object: object, under: identifier)
-                DispatchQueue.main.async {
-                    result(saving)
-                }
-                return
-            } catch {
-                print(error.localizedDescription)
-                DispatchQueue.main.async {
-                    result(false)
-                }
-                return
-            }
+        
+        return retVal
+        
+    }
+    
+    open func save(object: NSObject, under identifier: String, result:@escaping (Bool) -> ()) {
+        MKCacheStorageGlobals.dispatchQueue.sync {
+            let retVal = self.save(object: object, under: identifier)
+            result(retVal)
         }
     }
     
-    open func get(identifier: String) -> NSObject? {
-        //Get object from memory
-        if let object = self.storageItems[identifier] {
-            return object
+    open func save(object:NSObject, under identifier: String, with labels: [String], result:@escaping (Bool) -> ()) {
+        MKCacheStorageGlobals.dispatchQueue.sync {
+            let retVal = self.save(object: object, under: identifier, with: labels)
+            result(retVal)
         }
-        
-        //Else get object from disk
-        guard let storageHandler = self.storageHandler else { return nil }
+    }
+    
+    private func get(identifier: String) -> NSObject? {
         do {
-            if let object = try storageHandler.get(identifier: identifier) {
+            if let object = try self.storageHandler?.get(identifier: identifier) {
                 self.storageItems[identifier] = object
                 return object
             }
@@ -88,48 +76,51 @@ open class MKCacheStorage {
         return nil
     }
     
+    private func get(label: String) -> [NSObject] {
+        var retVal = [NSObject]()
+        
+        if let indexHandler = self.indexHandler {
+            let indices = indexHandler.get(for: String(label))
+            for identifier in indices {
+                if let object = self.get(identifier: identifier) {
+                    retVal.append(object)
+                }
+            }
+        }
+        
+        return retVal
+    }
+    
     open func get(identifier: String, result:@escaping (NSObject?) -> ()) {
-        MKCacheStorageOptions.dispatchQueue.async {
-            //Get object from memory
-            if let object = self.storageItems[identifier] {
-                DispatchQueue.main.async {
-                    result(object)
-                }
-                return
-            }
-            
-            //Else get object from disk
-            guard let storageHandler = self.storageHandler else {
-                DispatchQueue.main.async {
-                    result(nil)
-                }
-                return
-            }
-            do {
-                if let object = try storageHandler.get(identifier: identifier) {
-                    self.storageItems[identifier] = object
-                    DispatchQueue.main.async {
-                        result(object)
-                    }
-                    return
-                }
-            } catch {
-                print(error.localizedDescription)
-            }
-            DispatchQueue.main.async {
-                result(nil)
-            }
+        MKCacheStorageGlobals.dispatchQueue.async {
+            let object = self.storageItems[identifier] ?? self.get(identifier: identifier)
+            result(object)
+        }
+    }
+    
+    open func get(label: String, result:@escaping ([NSObject]) -> ()) {
+        MKCacheStorageGlobals.dispatchQueue.sync {
+            let objects = self.get(label: label)
+            result(objects)
         }
     }
     
     open func clearStorage() {
-        MKCacheStorageOptions.dispatchQueue.sync {
+        MKCacheStorageGlobals.dispatchQueue.sync {
             self.storageItems = [String: NSObject]()
             try? self.storageHandler?.clearAll()
+            try? self.indexHandler?.clearSecondaryIndices()
+        }
+    }
+    
+    open func saveRelations() {
+        if let indexHandler = self.indexHandler {
+            if let success = try? indexHandler.saveRelations() {
+                //TODO
+            }
         }
     }
     
     deinit {
-        print("deinit")
     }
 }

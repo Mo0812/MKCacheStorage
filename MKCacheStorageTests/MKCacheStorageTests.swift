@@ -12,8 +12,8 @@ import XCTest
 class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [Int: TestObject] = [Int: TestObject]()
-    var storage: MKCacheStorage = MKCacheStorage.sharedInstance
-    var max: Int = 1000
+    var storage: MKCacheStorage = MKCacheStorage.shared
+    var max: Int = 100
     
     override func setUp() {
         super.setUp()
@@ -22,6 +22,7 @@ class MKCacheStorageTests: XCTestCase {
             let testObj = TestObject(name: "name" + String(i), age: i)
             self.objContainer[i] = testObj
         }
+        
     }
     
     override func tearDown() {
@@ -38,7 +39,13 @@ class MKCacheStorageTests: XCTestCase {
         for (id, object) in self.objContainer {
             let expec = expectation(description: "Async set")
             expecArr.append(expec)
-            self.storage.save(object: object, under: "id" + String(id), result: { success in
+            
+            var labels = "odd"
+            if id % 2 == 0 {
+                labels = "even"
+            }
+            
+            self.storage.save(object: object, under: "id" + String(id), with: [labels], result: { success in
                 if !success {
                     print("Saving failed")
                 } else {
@@ -46,19 +53,13 @@ class MKCacheStorageTests: XCTestCase {
                     cnt += 1
                 }
             })
+            
         }
+        self.storage.saveRelations()
         
         waitForExpectations(timeout: 10) { (error) in
             print("\(cnt) / \(self.max)")
         }
-    }
-    
-    func testGetObjectOnMemory() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-
-        walkThroughObjects(storage: self.storage)
-        
     }
     
     func testGetObjectAsync() {
@@ -79,27 +80,54 @@ class MKCacheStorageTests: XCTestCase {
         wait(for: expecArr, timeout: 10)
     }
     
-    func testGetObjectOnDisk() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testEmptyLabel() {
+        let expec = expectation(description: "Empty label")
+        self.storage.get(label: "empty") { (objects) in
+            XCTAssertTrue(objects.isEmpty)
+            expec.fulfill()
+        }
+        
+        wait(for: [expec], timeout: 10)
+    }
+    
+    func testLabel() {
+        let expec = expectation(description: "Label counting")
+        self.storage.get(label: "odd") { (objects) in
+            XCTAssert(objects.count == (self.objContainer.count / 2))
+            expec.fulfill()
+        }
+    
+        wait(for: [expec], timeout: 10)
+    }
+    
+    func testLabelNewInstance() {
+        let expec = expectation(description: "Label counting")
+
         let storage = MKCacheStorage(debugInfo: false)
-        walkThroughObjects(storage: storage)
+        
+        storage.get(label: "odd") { (objects) in
+            XCTAssert(objects.count == (self.objContainer.count / 2))
+            expec.fulfill()
+        }
+        
+        wait(for: [expec], timeout: 10)
     }
     
-    func testPerformanceOnMemory() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-            testGetObjectOnMemory()
+    func testZClearAll() {
+        var expecArr = [XCTestExpectation]()
+        
+        self.storage.clearStorage()
+        
+        for(id, _) in self.objContainer {
+            let expec = expectation(description: "Deleted item")
+            expecArr.append(expec)
+            self.storage.get(identifier: "id" + String(id), result: { object in
+                XCTAssertNil(object)
+                expec.fulfill()
+            })
         }
-    }
-    
-    func testPerformanceOnDisk() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-            testGetObjectOnDisk()
-        }
+        
+        wait(for: expecArr, timeout: 10)
     }
     
     func testPerformanceOnAsync() {
@@ -108,16 +136,63 @@ class MKCacheStorageTests: XCTestCase {
         }
     }
     
-    func walkThroughObjects(storage: MKCacheStorage) {
-        for (id, obj) in self.objContainer {
-            let storedObj = storage.get(identifier: "id" + String(id))
-            if let retrievedObj = storedObj as? TestObject {
-                XCTAssert(obj.name == retrievedObj.name)
-                XCTAssert(obj.age == retrievedObj.age)
+    func testPerformanceOnLabel() {
+        self.measure {
+            testLabel()
+        }
+    }
+    
+    func testPerformanceOnWritingWithLabel() {
+        self.measure {
+            writeObjects(label: true)
+        }
+    }
+    
+    func testPerformanceOnWriting() {
+        self.measure {
+            writeObjects(label: false)
+        }
+    }
+    
+    func writeObjects(label: Bool = false) {
+        var expecArr = [XCTestExpectation]()
+        
+        var cnt = 0
+        
+        self.storage.clearStorage()
+        for (id, object) in self.objContainer {
+            let expec = expectation(description: "Async set")
+            expecArr.append(expec)
+            
+            if label {
+                var labels = "odd"
+                if id % 2 == 0 {
+                    labels = "even"
+                }
+                
+                self.storage.save(object: object, under: "id" + String(id), with: [labels], result: { success in
+                    if !success {
+                        print("Saving failed")
+                    } else {
+                        expec.fulfill()
+                        cnt += 1
+                    }
+                })
+            } else {
+                self.storage.save(object: object, under: "id" + String(id), result: { success in
+                    if !success {
+                        print("Saving failed")
+                    } else {
+                        expec.fulfill()
+                        cnt += 1
+                    }
+                })
             }
-            else {
-                XCTFail()
-            }
+            
+        }
+        
+        waitForExpectations(timeout: 10) { (error) in
+            print("\(cnt) / \(self.max)")
         }
     }
     
