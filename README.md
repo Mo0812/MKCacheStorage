@@ -28,14 +28,6 @@ This table shows the peformance of the framework while putting in the shown numb
 | write objects without labels | 0,095 | 0,867 s | 7,78 s | 44,9 s |
 | write objects with labels | 0,096 | 0,916 s | 10,5 s | 126 s |
 
-This table shows the performance of the framework by 25.000 stored elements and the recieving of a different amount of objects in several ways:
-
-| function / # of recieved objects from 25.000 | 1 | 10 | 100 | 1000 |
-| -------------------------------------------------- |:-----:|:-----:|-------:|
-| write objects initially |  | | | |
-| read sequential | | | | |
-| read by label | | | | |
-
 ## Usage
 
 ### Init MKCacheStorage
