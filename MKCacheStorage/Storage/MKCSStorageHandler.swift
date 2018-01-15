@@ -11,6 +11,7 @@ import Foundation
 enum MKCSStorageError: Error {
     case invalidPath
     case storageNotFound
+    case secondaryIndexNotFound
 }
 
 class MKCSStorageHandler {

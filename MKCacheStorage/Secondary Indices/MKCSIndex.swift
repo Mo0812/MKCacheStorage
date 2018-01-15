@@ -8,17 +8,32 @@
 
 import Foundation
 
-struct MKCSIndex: Hashable {
-    var hashValue: Int {
-        return index.hashValue
-    }
+class MKCSIndex: NSObject, NSCoding, NSCopying {
+    
     var index: String
     
     init(_ index: String) {
         self.index = index
     }
     
-    static func ==(lhs: MKCSIndex, rhs: MKCSIndex) -> Bool {
-        return lhs.hashValue == rhs.hashValue
+    required init(_ model: MKCSIndex) {
+        index = model.index
+    }
+    
+    func encode(with aCoder: NSCoder) {
+        aCoder.encode(self.index, forKey: "index")
+    }
+    
+    required convenience init?(coder aDecoder: NSCoder) {
+        var _index = ""
+        if let index = aDecoder.decodeObject(forKey: "index") as? String {
+            _index = index
+        }
+        
+        self.init(_index)
+    }
+    
+    func copy(with zone: NSZone? = nil) -> Any {
+        return type(of: self).init(self)
     }
 }
