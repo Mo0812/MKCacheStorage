@@ -6,6 +6,20 @@
 	objectVersion = 48;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		C514ECEF200CF04F00C5F040 /* UniversalMKCacheStorage */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = C514ECF2200CF04F00C5F040 /* Build configuration list for PBXAggregateTarget "UniversalMKCacheStorage" */;
+			buildPhases = (
+				C514ECF3200CF06300C5F040 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = UniversalMKCacheStorage;
+			productName = UniversalMKCacheStorage;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		C514ECEE200CDC9900C5F040 /* MKCacheStorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */; };
 		C58E4FE8200BFA6100923A83 /* MKCSSecondaryIndices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */; };
@@ -190,6 +204,10 @@
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Moritz Kanzler";
 				TargetAttributes = {
+					C514ECEF200CF04F00C5F040 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
 					C5E315321FFBDDC000C1F88B = {
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 0920;
@@ -215,6 +233,7 @@
 			targets = (
 				C5E315321FFBDDC000C1F88B /* MKCacheStorage */,
 				C5E3153B1FFBDDC000C1F88B /* MKCacheStorageTests */,
+				C514ECEF200CF04F00C5F040 /* UniversalMKCacheStorage */,
 			);
 		};
 /* End PBXProject section */
@@ -235,6 +254,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C514ECF3200CF06300C5F040 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "#!/bin/sh\nUNIVERSAL_OUTPUTFOLDER=${BUILD_DIR}/${CONFIGURATION}-universal\n# make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Step 1. Build Device and Simulator versions\nxcodebuild -target \"MKCacheStorage\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -sdk iphoneos  BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\nxcodebuild -target \"MKCacheStorage\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${BUILD_DIR}\" BUILD_ROOT=\"${BUILD_ROOT}\" clean build\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/MKCacheStorage.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy Swift modules from iphonesimulator build (if it exists) to the copied framework directory\nSIMULATOR_SWIFT_MODULES_DIR=\"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/MKCacheStorage.framework/Modules/MKCacheStorage.swiftmodule/.\"\nif [ -d \"${SIMULATOR_SWIFT_MODULES_DIR}\" ]; then\ncp -R \"${SIMULATOR_SWIFT_MODULES_DIR}\" \"${UNIVERSAL_OUTPUTFOLDER}/MKCacheStorage.framework/Modules/MKCacheStorage.swiftmodule\"\nfi\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/MKCacheStorage.framework/MKCacheStorage\" \"${BUILD_DIR}/${CONFIGURATION}-iphonesimulator/MKCacheStorage.framework/MKCacheStorage\" \"${BUILD_DIR}/${CONFIGURATION}-iphoneos/MKCacheStorage.framework/MKCacheStorage\"\n# Step 5. Convenience step to copy the framework to the project's directory\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/MKCacheStorage.framework\" \"${PROJECT_DIR}\"\n# Step 6. Convenience step to open the project's directory in Finder\nopen \"${PROJECT_DIR}\"";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		C5E3152E1FFBDDC000C1F88B /* Sources */ = {
@@ -269,6 +304,24 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		C514ECF0200CF04F00C5F040 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ELU5666M3R;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		C514ECF1200CF04F00C5F040 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = ELU5666M3R;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 		C5E315451FFBDDC000C1F88B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -318,7 +371,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -372,7 +425,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -460,6 +513,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C514ECF2200CF04F00C5F040 /* Build configuration list for PBXAggregateTarget "UniversalMKCacheStorage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C514ECF0200CF04F00C5F040 /* Debug */,
+				C514ECF1200CF04F00C5F040 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C5E3152D1FFBDDC000C1F88B /* Build configuration list for PBXProject "MKCacheStorage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
