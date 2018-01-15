@@ -101,9 +101,8 @@ class MKCacheStorageTests: XCTestCase {
     }
     
     func testLabelNewInstance() {
-        /*let expec = expectation(description: "Label counting")
+        let expec = expectation(description: "Label counting")
 
-        self.storage.saveRelations()
         let storage = MKCacheStorage(debugInfo: false)
         
         storage.get(label: "odd") { (objects) in
@@ -111,7 +110,24 @@ class MKCacheStorageTests: XCTestCase {
             expec.fulfill()
         }
         
-        wait(for: [expec], timeout: 10)*/
+        wait(for: [expec], timeout: 10)
+    }
+    
+    func testZClearAll() {
+        var expecArr = [XCTestExpectation]()
+        
+        self.storage.clearStorage()
+        
+        for(id, _) in self.objContainer {
+            let expec = expectation(description: "Deleted item")
+            expecArr.append(expec)
+            self.storage.get(identifier: "id" + String(id), result: { object in
+                XCTAssertNil(object)
+                expec.fulfill()
+            })
+        }
+        
+        wait(for: expecArr, timeout: 10)
     }
     
     func testPerformanceOnAsync() {

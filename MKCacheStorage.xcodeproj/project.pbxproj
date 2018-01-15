@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C514ECEE200CDC9900C5F040 /* MKCacheStorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */; };
 		C58E4FE8200BFA6100923A83 /* MKCSSecondaryIndices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */; };
-		C58E4FEA200BFAED00923A83 /* MKCSIndex.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58E4FE9200BFAED00923A83 /* MKCSIndex.swift */; };
 		C5E3153D1FFBDDC000C1F88B /* MKCacheStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */; };
 		C5E315421FFBDDC000C1F88B /* MKCacheStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5E315411FFBDDC000C1F88B /* MKCacheStorageTests.swift */; };
 		C5E315441FFBDDC000C1F88B /* MKCacheStorage.h in Headers */ = {isa = PBXBuildFile; fileRef = C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -30,8 +30,8 @@
 
 /* Begin PBXFileReference section */
 		C5001C3B20083A8F002BA52C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorageError.swift; sourceTree = "<group>"; };
 		C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSSecondaryIndices.swift; sourceTree = "<group>"; };
-		C58E4FE9200BFAED00923A83 /* MKCSIndex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSIndex.swift; sourceTree = "<group>"; };
 		C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MKCacheStorage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C5E315361FFBDDC000C1F88B /* MKCacheStorage.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MKCacheStorage.h; sourceTree = "<group>"; };
 		C5E315371FFBDDC000C1F88B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -67,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				C5E3154F1FFBDF3600C1F88B /* MKCacheStorageGlobals.swift */,
+				C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */,
 			);
 			path = Global;
 			sourceTree = "<group>";
@@ -75,7 +76,6 @@
 			isa = PBXGroup;
 			children = (
 				C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */,
-				C58E4FE9200BFAED00923A83 /* MKCSIndex.swift */,
 			);
 			path = "Secondary Indices";
 			sourceTree = "<group>";
@@ -242,10 +242,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5E315561FFBE3D800C1F88B /* MKCSStorageHandler.swift in Sources */,
+				C514ECEE200CDC9900C5F040 /* MKCacheStorageError.swift in Sources */,
 				C5E3154E1FFBDDDF00C1F88B /* MKCacheStorage.swift in Sources */,
 				C58E4FE8200BFA6100923A83 /* MKCSSecondaryIndices.swift in Sources */,
 				C5E315501FFBDF3600C1F88B /* MKCacheStorageGlobals.swift in Sources */,
-				C58E4FEA200BFAED00923A83 /* MKCSIndex.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

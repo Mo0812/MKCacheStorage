@@ -42,7 +42,7 @@ open class MKCacheStorage {
         
         if let indexHandler = self.indexHandler {
             labels.forEach({ label in
-                indexHandler.add(for: MKCSIndex(label), values: [identifier])
+                indexHandler.add(for: String(label), values: [identifier])
             })
         }
         
@@ -80,7 +80,7 @@ open class MKCacheStorage {
         var retVal = [NSObject]()
         
         if let indexHandler = self.indexHandler {
-            let indices = indexHandler.get(for: MKCSIndex(label))
+            let indices = indexHandler.get(for: String(label))
             for identifier in indices {
                 if let object = self.get(identifier: identifier) {
                     retVal.append(object)
@@ -109,16 +109,18 @@ open class MKCacheStorage {
         MKCacheStorageGlobals.dispatchQueue.sync {
             self.storageItems = [String: NSObject]()
             try? self.storageHandler?.clearAll()
+            try? self.indexHandler?.clearSecondaryIndices()
         }
     }
     
     open func saveRelations() {
         if let indexHandler = self.indexHandler {
-            indexHandler.saveRelations()
+            if let success = try? indexHandler.saveRelations() {
+                //TODO
+            }
         }
     }
     
     deinit {
-        print("deinit")
     }
 }
