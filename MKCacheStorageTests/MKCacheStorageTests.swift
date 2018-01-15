@@ -13,7 +13,7 @@ class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [Int: TestObject] = [Int: TestObject]()
     var storage: MKCacheStorage = MKCacheStorage.shared
-    var max: Int = 50000
+    var max: Int = 100
     
     override func setUp() {
         super.setUp()
@@ -139,6 +139,60 @@ class MKCacheStorageTests: XCTestCase {
     func testPerformanceOnLabel() {
         self.measure {
             testLabel()
+        }
+    }
+    
+    func testPerformanceOnWritingWithLabel() {
+        self.measure {
+            writeObjects(label: true)
+        }
+    }
+    
+    func testPerformanceOnWriting() {
+        self.measure {
+            writeObjects(label: false)
+        }
+    }
+    
+    func writeObjects(label: Bool = false) {
+        var expecArr = [XCTestExpectation]()
+        
+        var cnt = 0
+        
+        self.storage.clearStorage()
+        for (id, object) in self.objContainer {
+            let expec = expectation(description: "Async set")
+            expecArr.append(expec)
+            
+            if label {
+                var labels = "odd"
+                if id % 2 == 0 {
+                    labels = "even"
+                }
+                
+                self.storage.save(object: object, under: "id" + String(id), with: [labels], result: { success in
+                    if !success {
+                        print("Saving failed")
+                    } else {
+                        expec.fulfill()
+                        cnt += 1
+                    }
+                })
+            } else {
+                self.storage.save(object: object, under: "id" + String(id), result: { success in
+                    if !success {
+                        print("Saving failed")
+                    } else {
+                        expec.fulfill()
+                        cnt += 1
+                    }
+                })
+            }
+            
+        }
+        
+        waitForExpectations(timeout: 10) { (error) in
+            print("\(cnt) / \(self.max)")
         }
     }
     

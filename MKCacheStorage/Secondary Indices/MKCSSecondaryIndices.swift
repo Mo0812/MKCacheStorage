@@ -91,7 +91,6 @@ class MKCSSecondaryIndices {
     }
     
     deinit {
-        
         if let success = try? self.saveRelations() {
             if !success {
                 //TODO
