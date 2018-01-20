@@ -12,4 +12,5 @@ enum MKCacheStorageError: Error {
     case invalidPath
     case storageNotFound
     case secondaryIndexNotFound
+    case wrongObjectFormat
 }
