@@ -13,14 +13,14 @@ class MKCacheStorageTests: XCTestCase {
     
     var objContainer: [Int: TestObject] = [Int: TestObject]()
     var storage: MKCacheStorage = MKCacheStorage.shared
-    var max: Int = 100
+    var max: Int = 1000
     
     override func setUp() {
         super.setUp()
         
         for i in 1...self.max {
-            let testObj = TestObject(name: "name" + String(i), age: i)
-            self.objContainer[i] = testObj
+            let testObjJSON = TestObject(name: "name" + String(i), age: i)
+            self.objContainer[i] = testObjJSON
         }
         
     }
@@ -68,8 +68,8 @@ class MKCacheStorageTests: XCTestCase {
         for(id, obj) in self.objContainer {
             let expec = expectation(description: "Async get")
             expecArr.append(expec)
-            self.storage.get(identifier: "id" + String(id), result: { object in
-                if let retrievedObj = object as? TestObject {
+            self.storage.get(identifier: "id" + String(id), result: { (object: TestObject?) in
+                if let retrievedObj: TestObject = object {
                     if obj.name == retrievedObj.name && obj.age == retrievedObj.age {
                         expec.fulfill()
                     }
@@ -82,7 +82,7 @@ class MKCacheStorageTests: XCTestCase {
     
     func testEmptyLabel() {
         let expec = expectation(description: "Empty label")
-        self.storage.get(label: "empty") { (objects) in
+        self.storage.get(label: "empty") { (objects: [TestObject]) in
             XCTAssertTrue(objects.isEmpty)
             expec.fulfill()
         }
@@ -92,7 +92,7 @@ class MKCacheStorageTests: XCTestCase {
     
     func testLabel() {
         let expec = expectation(description: "Label counting")
-        self.storage.get(label: "odd") { (objects) in
+        self.storage.get(label: "odd") { (objects: [TestObject]) in
             XCTAssert(objects.count == (self.objContainer.count / 2))
             expec.fulfill()
         }
@@ -105,7 +105,7 @@ class MKCacheStorageTests: XCTestCase {
 
         let storage = MKCacheStorage(debugInfo: false)
         
-        storage.get(label: "odd") { (objects) in
+        storage.get(label: "odd") { (objects: [TestObject]) in
             XCTAssert(objects.count == (self.objContainer.count / 2))
             expec.fulfill()
         }
@@ -121,7 +121,7 @@ class MKCacheStorageTests: XCTestCase {
         for(id, _) in self.objContainer {
             let expec = expectation(description: "Deleted item")
             expecArr.append(expec)
-            self.storage.get(identifier: "id" + String(id), result: { object in
+            self.storage.get(identifier: "id" + String(id), result: { (object: TestObject?) in
                 XCTAssertNil(object)
                 expec.fulfill()
             })
