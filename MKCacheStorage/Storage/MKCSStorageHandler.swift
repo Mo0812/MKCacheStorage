@@ -1,21 +1,22 @@
 //
-//  MKCSStorageHandler.swift
+//  MKCSJSONHandler.swift
 //  MKCacheStorage
 //
-//  Created by Moritz Kanzler on 02.01.18.
+//  Created by Moritz Kanzler on 17.01.18.
 //  Copyright © 2018 Moritz Kanzler. All rights reserved.
 //
 
 import Foundation
 
 class MKCSStorageHandler {
-        
     var path: URL? {
         let manager = FileManager.default
         let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first
         
-        return url?.appendingPathComponent("MKCSData", isDirectory: true)
+        return url?.appendingPathComponent("MKCSJSON", isDirectory: true)
     }
+    let encoder = JSONEncoder()
+    let decoder = JSONDecoder()
     
     init() throws {
         try self.initStorageFolder()
@@ -35,21 +36,33 @@ class MKCSStorageHandler {
         }
     }
     
-    public func save(object: NSObject, under identifier: String) throws -> Bool {
+    public func save<T: Codable>(object: T, under identifier: String) throws -> Bool {
         guard let path = self.path else { throw MKCacheStorageError.invalidPath }
         let objectPath = path.appendingPathComponent(identifier)
         
-        return NSKeyedArchiver.archiveRootObject(object, toFile: objectPath.path)
+        if let encodedJSON = try? self.encoder.encode(object) {
+            //save to disk under identifier
+            do {
+                try encodedJSON.write(to: objectPath)
+                return true
+            } catch {
+                print(error.localizedDescription)
+                return false
+            }
+        }
+        
+        return false
     }
     
-    public func get(identifier: String) throws -> NSObject? {
+    public func get<T: Codable>(identifier: String) throws -> T? {
         guard let path = self.path else { throw MKCacheStorageError.invalidPath }
-        let objectPath = path.appendingPathComponent(identifier).path
+        let objectPath = path.appendingPathComponent(identifier)
         
-        let o = NSKeyedUnarchiver.unarchiveObject(withFile: objectPath)
-        guard let object = o as? NSObject else {
-            return nil
-        }
+        //get object from disk with path
+        guard let data = try? Data(contentsOf: objectPath) else { return nil }
+        //get json to object serialization
+        guard let object = try? self.decoder.decode(T.self, from: data) else { return nil }
+        
         return object
     }
     

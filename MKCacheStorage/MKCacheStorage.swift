@@ -13,13 +13,13 @@ open class MKCacheStorage {
     static let shared = MKCacheStorage(debugInfo: false)
     
     var storageItems = [String: Any]()
-    let storageHandler: MKCSJSONHandler?
+    let storageHandler: MKCSStorageHandler?
     let indexHandler: MKCSSecondaryIndices?
     
     init(debugInfo: Bool) {
         MKCacheStorageGlobals.debugMode = debugInfo
         
-        self.storageHandler = try? MKCSJSONHandler()
+        self.storageHandler = try? MKCSStorageHandler()
         self.indexHandler = try? MKCSSecondaryIndices()
     }
     
@@ -122,12 +122,13 @@ open class MKCacheStorage {
     
     open func saveRelations() {
         if let indexHandler = self.indexHandler {
-            if let success = try? indexHandler.saveRelations() {
+            if let _ = try? indexHandler.saveRelations() {
                 //TODO
             }
         }
     }
     
     deinit {
+        self.saveRelations()
     }
 }

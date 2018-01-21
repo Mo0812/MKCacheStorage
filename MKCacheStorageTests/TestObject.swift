@@ -1,33 +1,15 @@
 //
-//  TestObject.swift
+//  TestObjectJSON.swift
 //  MKCacheStorageTests
 //
-//  Created by Moritz Kanzler on 02.01.18.
+//  Created by Moritz Kanzler on 21.01.18.
 //  Copyright © 2018 Moritz Kanzler. All rights reserved.
 //
 
 import Foundation
+import MKCacheStorage
 
-class TestObject: NSObject, NSCoding {
-    
-    func encode(with aCoder: NSCoder) {
-        
-        aCoder.encode(self.name, forKey: "name")
-        aCoder.encode(self.age, forKey: "age")
-    }
-    
-    required convenience init?(coder aDecoder: NSCoder) {
-        var _name = ""
-        var _age = 0
-        
-        if let name = aDecoder.decodeObject(forKey: "name") as? String {
-            _name = name
-        }
-        _age = aDecoder.decodeInteger(forKey: "age")
-        
-        self.init(name: _name, age: _age)
-    }
-    
+class TestObject: Codable {
     var name: String
     var age: Int
     
@@ -35,4 +17,5 @@ class TestObject: NSObject, NSCoding {
         self.name = name
         self.age = age
     }
+    
 }
