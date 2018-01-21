@@ -36,7 +36,7 @@ class MKCSJSONHandler {
         }
     }
     
-    public func save(object: MKCSModel, under identifier: String) throws -> Bool {
+    public func save<T: Codable>(object: T, under identifier: String) throws -> Bool {
         guard let path = self.path else { throw MKCacheStorageError.invalidPath }
         let objectPath = path.appendingPathComponent(identifier)
         
@@ -54,14 +54,14 @@ class MKCSJSONHandler {
         return false
     }
     
-    public func get(identifier: String) throws -> MKCSModel? {
+    public func get<T: Codable>(identifier: String) throws -> T? {
         guard let path = self.path else { throw MKCacheStorageError.invalidPath }
         let objectPath = path.appendingPathComponent(identifier)
         
         //get object from disk with path
         guard let data = try? Data(contentsOf: objectPath) else { return nil }
         //get json to object serialization
-        guard let object = try? self.decoder.decode(MKCSModel.self, from: data) else { return nil }
+        guard let object = try? self.decoder.decode(T.self, from: data) else { return nil }
         
         return object
     }

@@ -12,18 +12,18 @@ open class MKCacheStorage {
     
     static let shared = MKCacheStorage(debugInfo: false)
     
-    var storageItems = [String: NSObject]()
-    let storageHandler: MKCSStorageHandler?
+    var storageItems = [String: Any]()
+    let storageHandler: MKCSJSONHandler?
     let indexHandler: MKCSSecondaryIndices?
     
     init(debugInfo: Bool) {
         MKCacheStorageGlobals.debugMode = debugInfo
         
-        self.storageHandler = try? MKCSStorageHandler()
+        self.storageHandler = try? MKCSJSONHandler()
         self.indexHandler = try? MKCSSecondaryIndices()
     }
     
-    private func save(object: NSObject, under identifier: String) -> Bool {
+    private func save<T: Codable>(object: T, under identifier: String) -> Bool {
         //Saving in dict
         self.storageItems[identifier] = object
         
@@ -37,7 +37,7 @@ open class MKCacheStorage {
         }
     }
     
-    private func save(object: NSObject, under identifier: String, with labels: [String]) -> Bool {
+    private func save<T: Codable>(object: T, under identifier: String, with labels: [String]) -> Bool {
         let retVal = self.save(object: object, under: identifier)
         
         if let indexHandler = self.indexHandler {
@@ -50,23 +50,23 @@ open class MKCacheStorage {
         
     }
     
-    open func save(object: NSObject, under identifier: String, result:@escaping (Bool) -> ()) {
+    open func save<T: Codable>(object: T, under identifier: String, result:@escaping (Bool) -> ()) {
         MKCacheStorageGlobals.dispatchQueue.sync {
             let retVal = self.save(object: object, under: identifier)
             result(retVal)
         }
     }
     
-    open func save(object:NSObject, under identifier: String, with labels: [String], result:@escaping (Bool) -> ()) {
+    open func save<T: Codable>(object: T, under identifier: String, with labels: [String], result:@escaping (Bool) -> ()) {
         MKCacheStorageGlobals.dispatchQueue.sync {
             let retVal = self.save(object: object, under: identifier, with: labels)
             result(retVal)
         }
     }
     
-    private func get(identifier: String) -> NSObject? {
+    private func get<T: Codable>(identifier: String) -> T? {
         do {
-            if let object = try self.storageHandler?.get(identifier: identifier) {
+            if let object: T = try self.storageHandler?.get(identifier: identifier) {
                 self.storageItems[identifier] = object
                 return object
             }
@@ -76,13 +76,13 @@ open class MKCacheStorage {
         return nil
     }
     
-    private func get(label: String) -> [NSObject] {
-        var retVal = [NSObject]()
+    private func get<T: Codable>(label: String) -> [T] {
+        var retVal = [T]()
         
         if let indexHandler = self.indexHandler {
             let indices = indexHandler.get(for: String(label))
             for identifier in indices {
-                if let object = self.get(identifier: identifier) {
+                if let object: T = self.get(identifier: identifier) {
                     retVal.append(object)
                 }
             }
@@ -91,23 +91,30 @@ open class MKCacheStorage {
         return retVal
     }
     
-    open func get(identifier: String, result:@escaping (NSObject?) -> ()) {
+    open func get<T: Codable>(identifier: String, result:@escaping (T?) -> ()) {
         MKCacheStorageGlobals.dispatchQueue.async {
-            let object = self.storageItems[identifier] ?? self.get(identifier: identifier)
-            result(object)
+            var retVal: T? = nil
+            if let memObj = self.storageItems[identifier] as? T {
+                retVal = memObj
+            } else if let storageObj: T = self.get(identifier: identifier) {
+                retVal = storageObj
+            }
+            
+            //let object: T = self.storageItems[identifier] ?? self.get(identifier: identifier) as? T
+            result(retVal)
         }
     }
     
-    open func get(label: String, result:@escaping ([NSObject]) -> ()) {
+    open func get<T: Codable>(label: String, result:@escaping ([T]) -> ()) {
         MKCacheStorageGlobals.dispatchQueue.sync {
-            let objects = self.get(label: label)
+            let objects: [T] = self.get(label: label)
             result(objects)
         }
     }
     
     open func clearStorage() {
         MKCacheStorageGlobals.dispatchQueue.sync {
-            self.storageItems = [String: NSObject]()
+            self.storageItems = [String: MKCSModel]()
             try? self.storageHandler?.clearAll()
             try? self.indexHandler?.clearSecondaryIndices()
         }

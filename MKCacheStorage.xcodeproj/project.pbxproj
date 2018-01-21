@@ -23,6 +23,7 @@
 /* Begin PBXBuildFile section */
 		C512753C200F905600A6366C /* MKCSJSONHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C512753B200F905600A6366C /* MKCSJSONHandler.swift */; };
 		C514ECEE200CDC9900C5F040 /* MKCacheStorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */; };
+		C54199502014F0AB001DC3EF /* TestObjectJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = C541994F2014F0AB001DC3EF /* TestObjectJSON.swift */; };
 		C58E4FE8200BFA6100923A83 /* MKCSSecondaryIndices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */; };
 		C5BAE8892013CE8100541326 /* MKCSModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5BAE8882013CE8100541326 /* MKCSModel.swift */; };
 		C5E3153D1FFBDDC000C1F88B /* MKCacheStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */; };
@@ -48,6 +49,7 @@
 		C5001C3B20083A8F002BA52C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C512753B200F905600A6366C /* MKCSJSONHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSJSONHandler.swift; sourceTree = "<group>"; };
 		C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorageError.swift; sourceTree = "<group>"; };
+		C541994F2014F0AB001DC3EF /* TestObjectJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestObjectJSON.swift; sourceTree = "<group>"; };
 		C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSSecondaryIndices.swift; sourceTree = "<group>"; };
 		C5BAE8882013CE8100541326 /* MKCSModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSModel.swift; sourceTree = "<group>"; };
 		C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MKCacheStorage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -144,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				C5E315571FFBE55200C1F88B /* TestObject.swift */,
+				C541994F2014F0AB001DC3EF /* TestObjectJSON.swift */,
 				C5E315411FFBDDC000C1F88B /* MKCacheStorageTests.swift */,
 				C5E315431FFBDDC000C1F88B /* Info.plist */,
 			);
@@ -305,6 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C5E315581FFBE55200C1F88B /* TestObject.swift in Sources */,
+				C54199502014F0AB001DC3EF /* TestObjectJSON.swift in Sources */,
 				C5E315421FFBDDC000C1F88B /* MKCacheStorageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -8,6 +8,6 @@
 
 import Foundation
 
-class MKCSModel: Codable {
+open class MKCSModel: Codable {
     
 }
