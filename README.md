@@ -77,17 +77,31 @@ Code example:
 //get object by id
 let id = "User1"
 
-mkcstorage.get(identifier: id, result: { object in
+mkcstorage.get(identifier: id, result: { (object: MyObject?) in
     if let retrievedObj = object as? MyObject {
         //do stuff with object
     }
 })
 
-//get objects by id
+//get objects by label
 let label = "contacts"
 
-mkcstorage.get(label: label) { objects in
+mkcstorage.get(label: label) { (objects: [MyObject]) in
     //do stuff with objects
 }
 ```
+### Object preparation
 
+To store an object in MKCacheStorage you just need to (auto)implement the ```Codable``` Protocol.
+
+```swift
+class MyObject: Codable {
+    var name: String
+    var age: Int
+
+    init(name: String, age: Int) {
+        self.name = name
+        self.age = age
+    }
+}
+```
