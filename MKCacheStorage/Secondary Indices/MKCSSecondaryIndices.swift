@@ -10,6 +10,7 @@ import Foundation
 
 class MKCSSecondaryIndices {
     
+    private let cacheSize: Int = 100
     private var relations = [String: Set<String>]()
     private var path: URL? {
         let manager = FileManager.default

@@ -13,7 +13,7 @@ class MKCSStorageHandler {
         let manager = FileManager.default
         let url = manager.urls(for: .documentDirectory, in: .userDomainMask).first
         
-        return url?.appendingPathComponent("MKCSJSON", isDirectory: true)
+        return url?.appendingPathComponent("MKCSData", isDirectory: true)
     }
     let encoder = JSONEncoder()
     let decoder = JSONDecoder()

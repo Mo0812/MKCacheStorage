@@ -80,6 +80,44 @@ class MKCacheStorageTests: XCTestCase {
         wait(for: expecArr, timeout: 10)
     }
     
+    func testDoubleEntryOverwritten() {
+        var expecArr = [XCTestExpectation]()
+        
+        let expec1 = expectation(description: "Get entry")
+        expecArr.append(expec1)
+        let expec2 = self.expectation(description: "Write double entry")
+        expecArr.append(expec2)
+        let expec3 = self.expectation(description: "Read doubled entry")
+        expecArr.append(expec3)
+
+        self.storage.get(identifier: "id98") { (object: TestObject?) in
+            if self.objContainer[98]?.name == object?.name {
+                expec1.fulfill()
+                
+                DispatchQueue.main.async {
+                    
+                    
+                    let doubleObj = TestObject(name: "id98", age: 111111)
+                    self.storage.save(object: doubleObj, under: "id98", with: ["even"], result: { (success) in
+                        if success {
+                            expec2.fulfill()
+                            
+                            DispatchQueue.main.async {
+                                self.storage.get(identifier: "id98", result: { (object: TestObject?) in
+                                    if object?.age == doubleObj.age {
+                                        expec3.fulfill()
+                                    }
+                                })
+                            }
+                        }
+                    })
+                }
+            }
+        }
+        
+        wait(for: expecArr, timeout: 10)
+    }
+    
     func testEmptyLabel() {
         let expec = expectation(description: "Empty label")
         self.storage.get(label: "empty") { (objects: [TestObject]) in
