@@ -114,7 +114,7 @@ open class MKCacheStorage {
     
     open func clearStorage() {
         MKCacheStorageGlobals.dispatchQueue.sync {
-            self.storageItems = [String: MKCSModel]()
+            self.storageItems = [String: Any]()
             try? self.storageHandler?.clearAll()
             try? self.indexHandler?.clearSecondaryIndices()
         }

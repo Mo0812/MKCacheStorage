@@ -7,7 +7,7 @@ Framework for saving objects persistent on disk. Extended by an dictionary which
 - [x] Include GCD for async requests and saving to don't block the main thread
 - [x] Use singleton instance for usage outside the framework
 - [x] Secondary indices for categorization of objects
-- [ ] Own protocol for object serialization
+- [x] ~~Own protocol for object serialization~~ Using new Codable for object serialization
 - [ ] Own index class
 - [ ] Reduce used disk space amount
 - [ ] caching algorithm for most used object and for reducing memory usage
@@ -20,13 +20,16 @@ This table shows the peformance of the framework while putting in the shown numb
 
 | function / # of objects | 100 | 1.000 | 10.000 | 50.000 |
 | ------------------- |:------:|:-----:|:--------:|--------:|
-| read direct from disk (*test case*) | ~0 | 0,343 | 3,3 s | 17,5 s |
-| read from memory (*test case*) | ~0 | 0,00268 s | 0,0303 s | 0,181 s |
-| read mixed async | 0,022 | 0,19 s | 1,85 s | 8.52 s |
-| read labeld objects (n/2) | 0,020 | 0,15 s |  1,66 s | 8,2 s |
+| read direct from disk (*test case*) | ~0 | 0,343 | 3,3 s | - |
+| read from memory (*test case*) | ~0 | 0,00268 s | 0,0303 s | - |
+| read mixed async | 0,028 | 0,279 s | 2,804 s | - |
+| read labeld objects (n/2) | 0,072 s | 0,15 s |  0,861 s | - |
 | | | | | |
-| write objects without labels | 0,095 | 0,867 s | 7,78 s | 44,9 s |
-| write objects with labels | 0,096 | 0,916 s | 10,5 s | 126 s |
+| write objects without labels | 0,099 s | 0,914 s | 9,027 s | - |
+| write objects with labels | 0,101 s | 0,922 s | 11,68 s | - |
+| Test with plain objects with two basic attributes | | | | |
+| used disk space | ~50MB | 3,9 MB | 39 MB | |
+| used memory space | 400 KB | ~120 MB | ~700 MB | |
 
 ## Usage
 
