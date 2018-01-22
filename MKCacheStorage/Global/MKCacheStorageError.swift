@@ -13,4 +13,6 @@ enum MKCacheStorageError: Error {
     case storageNotFound
     case secondaryIndexNotFound
     case wrongObjectFormat
+    case cacheEmpty
+    case cacheError
 }

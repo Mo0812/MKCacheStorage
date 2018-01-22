@@ -55,18 +55,18 @@ class MKCacheStorageTests: XCTestCase {
             })
             
         }
-        self.storage.saveRelations()
+        self.storage.close()
         
         waitForExpectations(timeout: 10) { (error) in
             print("\(cnt) / \(self.max)")
         }
     }
     
-    func testGetObjectAsync() {
+    func testGetObjectSync() {
         var expecArr = [XCTestExpectation]()
         
         for(id, obj) in self.objContainer {
-            let expec = expectation(description: "Async get")
+            let expec = expectation(description: "Sync get id: " + String(id))
             expecArr.append(expec)
             self.storage.get(identifier: "id" + String(id), result: { (object: TestObject?) in
                 if let retrievedObj: TestObject = object {
@@ -76,11 +76,11 @@ class MKCacheStorageTests: XCTestCase {
                 }
             })
         }
-        
+         
         wait(for: expecArr, timeout: 10)
     }
     
-    func testDoubleEntryOverwritten() {
+    func testMultiEntryOverwritten() {
         var expecArr = [XCTestExpectation]()
         
         let expec1 = expectation(description: "Get entry")
@@ -106,6 +106,11 @@ class MKCacheStorageTests: XCTestCase {
                                 self.storage.get(identifier: "id98", result: { (object: TestObject?) in
                                     if object?.age == doubleObj.age {
                                         expec3.fulfill()
+                                        DispatchQueue.main.async {
+                                            self.storage.save(object: TestObject(name: "name98", age: 98), under: "id98", with: ["even"], result: { (result) in
+                                                
+                                            })
+                                        }
                                     }
                                 })
                             }
@@ -168,9 +173,9 @@ class MKCacheStorageTests: XCTestCase {
         wait(for: expecArr, timeout: 10)
     }
     
-    func testPerformanceOnAsync() {
+    func testPerformanceOnSync() {
         self.measure {
-            testGetObjectAsync()
+            self.testGetObjectSync()
         }
     }
     

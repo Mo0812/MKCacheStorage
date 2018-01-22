@@ -13,6 +13,8 @@ open class MKCacheStorage {
     static let shared = MKCacheStorage(debugInfo: false)
     
     var storageItems = [String: Any]()
+    let cacheLimit = 100
+    var cacheLFU = [Int: Set<String>]()
     let storageHandler: MKCSStorageHandler?
     let indexHandler: MKCSSecondaryIndices?
     
@@ -21,11 +23,12 @@ open class MKCacheStorage {
         
         self.storageHandler = try? MKCSStorageHandler()
         self.indexHandler = try? MKCSSecondaryIndices()
+        
     }
     
     private func save<T: Codable>(object: T, under identifier: String) -> Bool {
-        //Saving in dict
-        self.storageItems[identifier] = object
+        //Saving in cache
+        self.cache(object: object, under: identifier)
         
         //Saving on disk
         guard let storageHandler = self.storageHandler else { return false }
@@ -67,7 +70,7 @@ open class MKCacheStorage {
     private func get<T: Codable>(identifier: String) -> T? {
         do {
             if let object: T = try self.storageHandler?.get(identifier: identifier) {
-                self.storageItems[identifier] = object
+                self.cache(object: object, under: identifier)
                 return object
             }
         } catch {
@@ -94,7 +97,7 @@ open class MKCacheStorage {
     open func get<T: Codable>(identifier: String, result:@escaping (T?) -> ()) {
         MKCacheStorageGlobals.dispatchQueue.async {
             var retVal: T? = nil
-            if let memObj = self.storageItems[identifier] as? T {
+            if let memObj: T = self.getCacheResult(identifier: identifier) {
                 retVal = memObj
             } else if let storageObj: T = self.get(identifier: identifier) {
                 retVal = storageObj
@@ -106,10 +109,53 @@ open class MKCacheStorage {
     }
     
     open func get<T: Codable>(label: String, result:@escaping ([T]) -> ()) {
-        MKCacheStorageGlobals.dispatchQueue.sync {
+        MKCacheStorageGlobals.dispatchQueue.async {
             let objects: [T] = self.get(label: label)
             result(objects)
         }
+    }
+    
+    private func isCacheFree() -> Bool {
+        return self.storageItems.count <= self.cacheLimit
+    }
+    
+    private func insertLFUIdentifier(lfuIndex: Int, for identifier: String) {
+        var entry = Set<String>()
+        if let lfuEntry = self.cacheLFU[lfuIndex] {
+            entry = lfuEntry
+        }
+        entry.insert(identifier)
+        self.cacheLFU[lfuIndex] = entry
+    }
+    
+    private func removeLFUObject() throws {
+        let sortedArr = Array(self.cacheLFU.keys).sorted(by: <)
+        
+        guard let lfu = sortedArr.first else { throw MKCacheStorageError.cacheEmpty }
+        guard let lfuIds = self.cacheLFU[lfu] else { throw MKCacheStorageError.cacheError }
+        
+        var newIds = lfuIds
+        let removedId = newIds.removeFirst()
+        self.storageItems[removedId] = nil
+        self.cacheLFU[lfu] = newIds
+        
+    }
+    
+    private func getCacheResult<T: Codable>(identifier: String) -> T? {
+        let retVal = self.storageItems[identifier] as? T
+        return retVal
+    }
+    
+    private func cache<T: Codable>(object: T, under identifier: String) {
+        if !self.isCacheFree() {
+            do {
+                try self.removeLFUObject()
+            } catch {
+                print(error.localizedDescription)
+            }
+        }
+        self.storageItems[identifier] = object
+        self.insertLFUIdentifier(lfuIndex: 1, for: identifier)
     }
     
     open func clearStorage() {
@@ -120,7 +166,7 @@ open class MKCacheStorage {
         }
     }
     
-    open func saveRelations() {
+    open func close() {
         if let indexHandler = self.indexHandler {
             if let _ = try? indexHandler.saveRelations() {
                 //TODO
@@ -129,6 +175,6 @@ open class MKCacheStorage {
     }
     
     deinit {
-        self.saveRelations()
+        self.close()
     }
 }
