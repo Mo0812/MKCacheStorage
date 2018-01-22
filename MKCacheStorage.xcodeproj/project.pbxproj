@@ -23,6 +23,8 @@
 /* Begin PBXBuildFile section */
 		C512753C200F905600A6366C /* MKCSStorageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = C512753B200F905600A6366C /* MKCSStorageHandler.swift */; };
 		C514ECEE200CDC9900C5F040 /* MKCacheStorageError.swift in Sources */ = {isa = PBXBuildFile; fileRef = C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */; };
+		C5373FD820164906003CF962 /* test-image.jpg in Resources */ = {isa = PBXBuildFile; fileRef = C5373FD720164906003CF962 /* test-image.jpg */; };
+		C5373FDA2016491D003CF962 /* BigObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5373FD92016491D003CF962 /* BigObject.swift */; };
 		C54199502014F0AB001DC3EF /* TestObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = C541994F2014F0AB001DC3EF /* TestObject.swift */; };
 		C58E4FE8200BFA6100923A83 /* MKCSSecondaryIndices.swift in Sources */ = {isa = PBXBuildFile; fileRef = C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */; };
 		C5E3153D1FFBDDC000C1F88B /* MKCacheStorage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */; };
@@ -46,6 +48,8 @@
 		C5001C3B20083A8F002BA52C /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		C512753B200F905600A6366C /* MKCSStorageHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSStorageHandler.swift; sourceTree = "<group>"; };
 		C514ECED200CDC9900C5F040 /* MKCacheStorageError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCacheStorageError.swift; sourceTree = "<group>"; };
+		C5373FD720164906003CF962 /* test-image.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = "test-image.jpg"; sourceTree = "<group>"; };
+		C5373FD92016491D003CF962 /* BigObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BigObject.swift; sourceTree = "<group>"; };
 		C541994F2014F0AB001DC3EF /* TestObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestObject.swift; sourceTree = "<group>"; };
 		C58E4FE7200BFA6100923A83 /* MKCSSecondaryIndices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MKCSSecondaryIndices.swift; sourceTree = "<group>"; };
 		C5E315331FFBDDC000C1F88B /* MKCacheStorage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MKCacheStorage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -129,6 +133,8 @@
 		C5E315401FFBDDC000C1F88B /* MKCacheStorageTests */ = {
 			isa = PBXGroup;
 			children = (
+				C5373FD720164906003CF962 /* test-image.jpg */,
+				C5373FD92016491D003CF962 /* BigObject.swift */,
 				C541994F2014F0AB001DC3EF /* TestObject.swift */,
 				C5E315411FFBDDC000C1F88B /* MKCacheStorageTests.swift */,
 				C5E315431FFBDDC000C1F88B /* Info.plist */,
@@ -250,6 +256,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5373FD820164906003CF962 /* test-image.jpg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C54199502014F0AB001DC3EF /* TestObject.swift in Sources */,
+				C5373FDA2016491D003CF962 /* BigObject.swift in Sources */,
 				C5E315421FFBDDC000C1F88B /* MKCacheStorageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

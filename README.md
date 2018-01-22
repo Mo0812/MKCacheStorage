@@ -22,11 +22,11 @@ This table shows the peformance of the framework while putting in the shown numb
 | ------------------- |:------:|:-----:|:--------:|--------:|
 | read direct from disk (*test case*) | ~0 | 0,343 | 3,3 s | - |
 | read from memory (*test case*) | ~0 | 0,00268 s | 0,0303 s | - |
-| read mixed async | 0,028 | 0,279 s | 2,804 s | - |
-| read labeld objects (n/2) | 0,072 s | 0,15 s |  0,861 s | - |
+| read mixed async | 0,028 | 0,272 s | 2,673 s | - |
+| read labeld objects (n/2) | 0,001 s | 0,001 s |  0,008 s | - |
 | | | | | |
-| write objects without labels | 0,099 s | 0,914 s | 9,027 s | - |
-| write objects with labels | 0,101 s | 0,922 s | 11,68 s | - |
+| write objects without labels | 0,088 s | 0,874 s | 8,764 s | - |
+| write objects with labels | 0,089 s | 0,910 s | 11,901 s | - |
 | | | | | |
 | *Test with plain objects with two basic attributes* | | | | |
 | used disk space | ~50MB | 3,9 MB | 39 MB | |

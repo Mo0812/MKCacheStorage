@@ -13,8 +13,8 @@ open class MKCacheStorage {
     static let shared = MKCacheStorage(debugInfo: false)
     
     var storageItems = [String: Any]()
-    let cacheLimit = 100
-    var cacheLFU = [Int: Set<String>]()
+    let cacheLimit = 50
+    var cacheLFU = [String: Int]()
     let storageHandler: MKCSStorageHandler?
     let indexHandler: MKCSSecondaryIndices?
     
@@ -85,8 +85,10 @@ open class MKCacheStorage {
         if let indexHandler = self.indexHandler {
             let indices = indexHandler.get(for: String(label))
             for identifier in indices {
-                if let object: T = self.get(identifier: identifier) {
-                    retVal.append(object)
+                if let memObj: T = self.getCacheResult(identifier: identifier) {
+                    retVal.append(memObj)
+                } else if let storageObj: T = self.get(identifier: identifier) {
+                    retVal.append(storageObj)
                 }
             }
         }
@@ -103,7 +105,6 @@ open class MKCacheStorage {
                 retVal = storageObj
             }
             
-            //let object: T = self.storageItems[identifier] ?? self.get(identifier: identifier) as? T
             result(retVal)
         }
     }
@@ -119,43 +120,48 @@ open class MKCacheStorage {
         return self.storageItems.count <= self.cacheLimit
     }
     
-    private func insertLFUIdentifier(lfuIndex: Int, for identifier: String) {
-        var entry = Set<String>()
-        if let lfuEntry = self.cacheLFU[lfuIndex] {
-            entry = lfuEntry
+    private func insertCacheEntry(for identifier: String) {
+        let lfuIndex = 1
+        if self.cacheLFU[identifier] == nil {
+            self.cacheLFU[identifier] = lfuIndex
         }
-        entry.insert(identifier)
-        self.cacheLFU[lfuIndex] = entry
     }
     
-    private func removeLFUObject() throws {
-        let sortedArr = Array(self.cacheLFU.keys).sorted(by: <)
-        
+    private func removeCacheEntry() throws {
+        let sortedArr = Array(self.cacheLFU.values).sorted(by: <)
         guard let lfu = sortedArr.first else { throw MKCacheStorageError.cacheEmpty }
-        guard let lfuIds = self.cacheLFU[lfu] else { throw MKCacheStorageError.cacheError }
         
-        var newIds = lfuIds
-        let removedId = newIds.removeFirst()
-        self.storageItems[removedId] = nil
-        self.cacheLFU[lfu] = newIds
+        let filteredEntries = self.cacheLFU.filter {
+            $0.value == lfu
+        }
         
+        guard let removedKey = filteredEntries.first?.key else { throw MKCacheStorageError.cacheError }
+        
+        self.storageItems[removedKey] = nil
+        self.cacheLFU[removedKey] = nil
     }
     
     private func getCacheResult<T: Codable>(identifier: String) -> T? {
         let retVal = self.storageItems[identifier] as? T
+        /*if let oldLFU = self.cacheLFU[identifier] {
+            self.cacheLFU[identifier] = oldLFU + 1
+        } else {
+            self.cacheLFU[identifier] = 1
+        }*/
+        
         return retVal
     }
     
     private func cache<T: Codable>(object: T, under identifier: String) {
-        if !self.isCacheFree() {
+        /*if !self.isCacheFree() {
             do {
-                try self.removeLFUObject()
+                try self.removeCacheEntry()
             } catch {
                 print(error.localizedDescription)
             }
-        }
+        }*/
         self.storageItems[identifier] = object
-        self.insertLFUIdentifier(lfuIndex: 1, for: identifier)
+        //self.insertCacheEntry(for: identifier)
     }
     
     open func clearStorage() {
