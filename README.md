@@ -27,7 +27,8 @@ This table shows the peformance of the framework while putting in the shown numb
 | | | | | |
 | write objects without labels | 0,099 s | 0,914 s | 9,027 s | - |
 | write objects with labels | 0,101 s | 0,922 s | 11,68 s | - |
-| Test with plain objects with two basic attributes | | | | |
+| | | | | |
+| *Test with plain objects with two basic attributes* | | | | |
 | used disk space | ~50MB | 3,9 MB | 39 MB | |
 | used memory space | 400 KB | ~120 MB | ~700 MB | |
 
