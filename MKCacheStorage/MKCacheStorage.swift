@@ -170,10 +170,11 @@ open class MKCacheStorage {
     }
     
     open func close() {
-        if let indexHandler = self.indexHandler {
-            if let _ = try? indexHandler.saveRelations() {
-                //TODO
-            }
+        guard let indexHandler = self.indexHandler else { return }
+        do {
+            try indexHandler.saveRelations()
+        } catch {
+            print(error.localizedDescription)
         }
     }
     
