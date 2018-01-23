@@ -10,7 +10,7 @@ import Foundation
 
 open class MKCacheStorage {
     
-    static let shared = MKCacheStorage(debugInfo: false)
+    open static let shared = MKCacheStorage(debugInfo: false)
     
     let storageHandler: MKCSStorageHandler?
     let indexHandler: MKCSSecondaryIndices?
