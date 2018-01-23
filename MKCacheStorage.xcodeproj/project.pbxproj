@@ -120,6 +120,7 @@
 		C5E315351FFBDDC000C1F88B /* MKCacheStorage */ = {
 			isa = PBXGroup;
 			children = (
+				C5373FD720164906003CF962 /* test-image.jpg */,
 				C58E4FE6200BFA2A00923A83 /* Secondary Indices */,
 				C58E4FE5200BF9F700923A83 /* Global */,
 				C5E315541FFBE3C000C1F88B /* Storage */,
@@ -133,7 +134,6 @@
 		C5E315401FFBDDC000C1F88B /* MKCacheStorageTests */ = {
 			isa = PBXGroup;
 			children = (
-				C5373FD720164906003CF962 /* test-image.jpg */,
 				C5373FD92016491D003CF962 /* BigObject.swift */,
 				C541994F2014F0AB001DC3EF /* TestObject.swift */,
 				C5E315411FFBDDC000C1F88B /* MKCacheStorageTests.swift */,

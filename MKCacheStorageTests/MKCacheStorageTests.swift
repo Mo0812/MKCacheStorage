@@ -11,15 +11,20 @@ import XCTest
 
 class MKCacheStorageTests: XCTestCase {
     
-    var objContainer: [Int: TestObject] = [Int: TestObject]()
+    var objContainer: [Int: BigObject] = [Int: BigObject]()
     var storage: MKCacheStorage = MKCacheStorage.shared
-    var max: Int = 10000
+    var sampleImage: UIImage?
+    var max: Int = 100
     
     override func setUp() {
         super.setUp()
         
+        let bundle = Bundle(for: type(of: self))
+        let path = bundle.path(forResource: "test-image", ofType: "jpg")
+        self.sampleImage = UIImage(contentsOfFile: path!)
+        
         for i in 1...self.max {
-            let testObjJSON = TestObject(name: "name" + String(i), age: i)
+            let testObjJSON = BigObject(name: "name" + String(i), image: self.sampleImage!)
             self.objContainer[i] = testObjJSON
         }
         
@@ -68,9 +73,9 @@ class MKCacheStorageTests: XCTestCase {
         for(id, obj) in self.objContainer {
             let expec = expectation(description: "Sync get id: " + String(id))
             expecArr.append(expec)
-            self.storage.get(identifier: "id" + String(id), result: { (object: TestObject?) in
-                if let retrievedObj: TestObject = object {
-                    if obj.name == retrievedObj.name && obj.age == retrievedObj.age {
+            self.storage.get(identifier: "id" + String(id), result: { (object: BigObject?) in
+                if let retrievedObj: BigObject = object {
+                    if obj.name == retrievedObj.name {
                         expec.fulfill()
                     }
                 }
@@ -90,24 +95,24 @@ class MKCacheStorageTests: XCTestCase {
         let expec3 = self.expectation(description: "Read doubled entry")
         expecArr.append(expec3)
 
-        self.storage.get(identifier: "id98") { (object: TestObject?) in
+        self.storage.get(identifier: "id98") { (object: BigObject?) in
             if self.objContainer[98]?.name == object?.name {
                 expec1.fulfill()
                 
                 DispatchQueue.main.async {
                     
                     
-                    let doubleObj = TestObject(name: "id98", age: 111111)
+                    let doubleObj = BigObject(name: "idZ98", image: self.sampleImage!)
                     self.storage.save(object: doubleObj, under: "id98", with: ["even"], result: { (success) in
                         if success {
                             expec2.fulfill()
                             
                             DispatchQueue.main.async {
-                                self.storage.get(identifier: "id98", result: { (object: TestObject?) in
-                                    if object?.age == doubleObj.age {
+                                self.storage.get(identifier: "id98", result: { (object: BigObject?) in
+                                    if object?.name == doubleObj.name {
                                         expec3.fulfill()
                                         DispatchQueue.main.async {
-                                            self.storage.save(object: TestObject(name: "name98", age: 98), under: "id98", with: ["even"], result: { (result) in
+                                            self.storage.save(object: BigObject(name: "name98", image: self.sampleImage!), under: "id98", with: ["even"], result: { (result) in
                                                 
                                             })
                                         }
@@ -125,7 +130,7 @@ class MKCacheStorageTests: XCTestCase {
     
     func testEmptyLabel() {
         let expec = expectation(description: "Empty label")
-        self.storage.get(label: "empty") { (objects: [TestObject]) in
+        self.storage.get(label: "empty") { (objects: [BigObject]) in
             XCTAssertTrue(objects.isEmpty)
             expec.fulfill()
         }
@@ -135,7 +140,7 @@ class MKCacheStorageTests: XCTestCase {
     
     func testLabel() {
         let expec = expectation(description: "Label counting")
-        self.storage.get(label: "odd") { (objects: [TestObject]) in
+        self.storage.get(label: "odd") { (objects: [BigObject]) in
             XCTAssert(objects.count == (self.objContainer.count / 2))
             expec.fulfill()
         }
@@ -148,7 +153,7 @@ class MKCacheStorageTests: XCTestCase {
 
         let storage = MKCacheStorage(debugInfo: false)
         
-        storage.get(label: "odd") { (objects: [TestObject]) in
+        storage.get(label: "odd") { (objects: [BigObject]) in
             XCTAssert(objects.count == (self.objContainer.count / 2))
             expec.fulfill()
         }
@@ -164,7 +169,7 @@ class MKCacheStorageTests: XCTestCase {
         for(id, _) in self.objContainer {
             let expec = expectation(description: "Deleted item")
             expecArr.append(expec)
-            self.storage.get(identifier: "id" + String(id), result: { (object: TestObject?) in
+            self.storage.get(identifier: "id" + String(id), result: { (object: BigObject?) in
                 XCTAssertNil(object)
                 expec.fulfill()
             })
