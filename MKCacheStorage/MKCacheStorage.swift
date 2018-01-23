@@ -68,8 +68,13 @@ open class MKCacheStorage {
     }
     
     private func get<T: Codable>(identifier: String) -> T? {
+        if let memObj: T = self.getCacheResult(identifier: identifier) {
+            return memObj
+        }
+        
+        guard let storageHandler = self.storageHandler else { return nil }
         do {
-            if let object: T = try self.storageHandler?.get(identifier: identifier) {
+            if let object: T = try storageHandler.get(identifier: identifier) {
                 self.cache(object: object, under: identifier)
                 return object
             }
@@ -85,10 +90,8 @@ open class MKCacheStorage {
         if let indexHandler = self.indexHandler {
             let indices = indexHandler.get(for: String(label))
             for identifier in indices {
-                if let memObj: T = self.getCacheResult(identifier: identifier) {
-                    retVal.append(memObj)
-                } else if let storageObj: T = self.get(identifier: identifier) {
-                    retVal.append(storageObj)
+                if let obj: T = self.get(identifier: identifier) {
+                    retVal.append(obj)
                 }
             }
         }
@@ -98,14 +101,8 @@ open class MKCacheStorage {
     
     open func get<T: Codable>(identifier: String, result:@escaping (T?) -> ()) {
         MKCacheStorageGlobals.dispatchQueue.async {
-            var retVal: T? = nil
-            if let memObj: T = self.getCacheResult(identifier: identifier) {
-                retVal = memObj
-            } else if let storageObj: T = self.get(identifier: identifier) {
-                retVal = storageObj
-            }
-            
-            result(retVal)
+            let obj: T? = self.get(identifier: identifier)
+            result(obj)
         }
     }
     
