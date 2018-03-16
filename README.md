@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/Mo0812/MKCacheStorage.svg?branch=master)](https://travis-ci.org/Mo0812/MKCacheStorage)
 [![Platform](https://img.shields.io/badge/platform-ios-lightgrey.svg)]()
 
-Framework for saving objects persistent on disk. Extended by an dictionary which saves seen objects for faster delivery on duplicate requests.
+A framework for saving objects persistent on disk. Extended by a dictionary that saves seen objects for faster delivery on duplicate requests.
 
 ## Roadmap
 - [x] Saving & retrieving objects with NSCoding protocol on disk
@@ -13,13 +13,13 @@ Framework for saving objects persistent on disk. Extended by an dictionary which
 - [x] ~~Own protocol for object serialization~~ Using new Codable for object serialization
 - [ ] Own index class
 - [ ] Reduce used disk space amount
-- [ ] caching algorithm for most used object and for reducing memory usage
-- [ ] auto save secondary indices on disk
+- [ ] Caching algorithm for most used object and for reducing memory usage
+- [ ] Auto save secondary indices on disk
 - [x] Tests for every important action
 
 ## Performance
 
-This table shows the peformance of the framework while putting in the shown number of objects and also recieve the whole amount back in serveral ways:
+This table shows the peformance of the framework, including the number of shown objects and several ways of receiving the entire amount back:
 
 | function / # of objects | 100 | 1.000 | 10.000 | 50.000 |
 | ------------------- |:------:|:-----:|:--------:|--------:|
@@ -39,7 +39,7 @@ This table shows the peformance of the framework while putting in the shown numb
 
 ### Init MKCacheStorage
 
-You can initiate your MKCacheStorage instance via the singleton pattern with the `shared` variable shown in the code example.
+You can initiate an MKCacheStorage instance via the singleton pattern, with the `shared` variable shown below:
 
 ```swift
 let mkcstorage: MKCacheStorage = MKCacheStorage.shared
@@ -47,7 +47,7 @@ let mkcstorage: MKCacheStorage = MKCacheStorage.shared
 
 ### Save objects
 
-There `save` method stores objects in the framework, you can also give an array with labels for the object optionally:
+The `save` method stores objects in the framework; if desired, you can also give an array with labels for the object:
 - `save(object: NSObject, under identifier: String, result:@escaping (Bool) -> ())`
 - `save(object:NSObject, under identifier: String, with labels: [String], result:@escaping (Bool) -> ())`
 
@@ -95,7 +95,7 @@ mkcstorage.get(label: label) { (objects: [MyObject]) in
 ```
 ### Object preparation
 
-To store an object in MKCacheStorage you just need to (auto)implement the ```Codable``` Protocol.
+To store an object in MKCacheStorage, you'll need to (auto)implement the ```Codable``` protocol:
 
 ```swift
 class MyObject: Codable {
