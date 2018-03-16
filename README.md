@@ -1,4 +1,5 @@
 #  MKCacheStorage
+[![Build Status](https://travis-ci.org/Mo0812/MKCacheStorage.svg?branch=master)](https://travis-ci.org/Mo0812/MKCacheStorage)
 Framework for saving objects persistent on disk. Extended by an dictionary which saves seen objects for faster delivery on duplicate requests.
 
 ## Roadmap
