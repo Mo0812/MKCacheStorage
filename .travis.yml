@@ -2,7 +2,7 @@ osx_image: xcode9.2
 language: objective-c
 
 xcode_project: MKCacheStorage.xcodeproj
-xcode_scheme: MKCacheStorageTests
+# xcode_scheme: MKCacheStorageTests
 
 # whitelist
 branches:
