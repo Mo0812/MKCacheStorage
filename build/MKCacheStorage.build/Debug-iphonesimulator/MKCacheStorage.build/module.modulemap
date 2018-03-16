@@ -1,0 +1,11 @@
+framework module MKCacheStorage {
+  umbrella header "MKCacheStorage.h"
+
+  export *
+  module * { export * }
+}
+
+module MKCacheStorage.Swift {
+    header "MKCacheStorage-Swift.h"
+    requires objc
+}

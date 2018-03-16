@@ -1,0 +1,10 @@
+version: "Apple Swift version 4.0.3 (swiftlang-900.0.74.1 clang-900.0.39.2)"
+options: "77f549043bd37c879cc63a837e0cead0"
+build_time: [1516719454, 871570000]
+inputs:
+  "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/MKCacheStorage/Global/MKCacheStorageError.swift": [1516713601, 0]
+  "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/MKCacheStorage/Storage/MKCSStorageHandler.swift": [1516616714, 0]
+  "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/MKCacheStorage/MKCacheStorage.swift": [1516719394, 0]
+  "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/MKCacheStorage/Cache/MKCSCacheHandler.swift": [1516714170, 0]
+  "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/MKCacheStorage/Secondary Indices/MKCSSecondaryIndices.swift": [1516713763, 0]
+  "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/MKCacheStorage/Global/MKCacheStorageGlobals.swift": [1516025820, 0]

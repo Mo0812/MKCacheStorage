@@ -10,7 +10,6 @@ import Foundation
 
 class MKCSSecondaryIndices {
     
-    private let cacheSize: Int = 100
     private var relations = [String: Set<String>]()
     private var path: URL? {
         let manager = FileManager.default
@@ -68,11 +67,10 @@ class MKCSSecondaryIndices {
         }
     }
     
-    func saveRelations() throws -> Bool {
-        if let path = self.path {
-            return NSKeyedArchiver.archiveRootObject(self.relations, toFile: path.path)
-        } else {
-            throw MKCacheStorageError.invalidPath
+    func saveRelations() throws {
+        guard let path = self.path else { throw MKCacheStorageError.invalidPath }
+        if !NSKeyedArchiver.archiveRootObject(self.relations, toFile: path.path) {
+            throw MKCacheStorageError.secondaryIndexExportFailed
         }
     }
     
@@ -92,11 +90,7 @@ class MKCSSecondaryIndices {
     }
     
     deinit {
-        if let success = try? self.saveRelations() {
-            if !success {
-                //TODO
-            }
-        }
+        try? self.saveRelations()
     }
     
 }

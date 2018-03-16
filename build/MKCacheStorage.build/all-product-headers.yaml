@@ -1,0 +1,33 @@
+{
+  'version': 0,
+  'case-sensitive': 'false',
+  'roots': [
+    {
+      'type': 'directory',
+      'name': "/Users/mkanzler/Library/Developer/Xcode/DerivedData/MKCacheStorage-ciahbhqfpkotawcgytrcnjaajazz/Build/Products/Debug-iphonesimulator/MKCacheStorage.framework/Headers",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "MKCacheStorage-Swift.h",
+          'external-contents': "/Users/mkanzler/Library/Developer/Xcode/DerivedData/MKCacheStorage-ciahbhqfpkotawcgytrcnjaajazz/Build/Products/Debug-iphonesimulator/MKCacheStorage.framework/Headers/MKCacheStorage-Swift.h"
+        },
+        {
+          'type': 'file',
+          'name': "MKCacheStorage.h",
+          'external-contents': "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/MKCacheStorage/MKCacheStorage.h"
+        }
+      ]
+    },
+    {
+      'type': 'directory',
+      'name': "/Users/mkanzler/Library/Developer/Xcode/DerivedData/MKCacheStorage-ciahbhqfpkotawcgytrcnjaajazz/Build/Products/Debug-iphonesimulator/MKCacheStorage.framework/Modules",
+      'contents': [
+        {
+          'type': 'file',
+          'name': "module.modulemap",
+          'external-contents': "/Users/mkanzler/Dropbox/Projekte/Swift/MKCacheStorage/build/MKCacheStorage.build/Debug-iphonesimulator/MKCacheStorage.build/module.modulemap"
+        }
+      ]
+    }
+  ]
+}
